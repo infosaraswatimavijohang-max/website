@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head><title>Check Gallery</title></head>
+<body>
+<h1>Check Gallery</h1>
+<pre id="out"></pre>
+<script>
+const data = JSON.parse(localStorage.getItem('schoolData'));
+let out = '';
+if (data && data.gallery) {
+  out += 'Gallery collections: ' + data.gallery.length + '\n';
+  data.gallery.forEach((g, i) => {
+    out += i + ': ' + g.c + ' - ' + (g.imgs ? g.imgs.length : 0) + ' images, order: ' + g.i + '\n';
+  });
+} else {
+  out += 'No gallery data in localStorage';
+}
+document.getElementById('out').textContent = out;
+</script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+{
+  "communities": {
+    "0": [
+      "Google_Fonts",
+      "Shree_Saraswati_Secondary_School",
+      "base64_images",
+      "index_html",
+      "localStorage",
+      "static_HTML",
+      "vanilla_HTML_CSS_JS"
+    ],
+    "1": [
+      "admin_html",
+      "admission_inquiries",
+      "color_palette",
+      "dashboard",
+      "fonts",
+      "gallery"
+    ],
+    "2": [
+      "teacher_fields",
+      "teachers"
+    ],
+    "3": [
+      "notice_categories",
+      "notices"
+    ],
+    "4": [
+      "student_classes",
+      "students"
+    ],
+    "5": [
+      "school_stats",
+      "statistics"
+    ],
+    "6": [
+      "school_settings",
+      "settings"
+    ]
+  },
+  "cohesion": {
+    "0": 0.29,
+    "1": 0.33,
+    "2": 1.0,
+    "3": 1.0,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0
+  },
+  "gods": [
+    {
+      "id": "admin_html",
+      "label": "admin.html",
+      "degree": 11
+    },
+    {
+      "id": "Shree_Saraswati_Secondary_School",
+      "label": "Shree Saraswati Secondary School",
+      "degree": 7
+    },
+    {
+      "id": "teachers",
+      "label": "Teachers Panel",
+      "degree": 2
+    },
+    {
+      "id": "notices",
+      "label": "Notices Panel",
+      "degree": 2
+    },
+    {
+      "id": "students",
+      "label": "Students Panel",
+      "degree": 2
+    },
+    {
+      "id": "statistics",
+      "label": "Statistics Panel",
+      "degree": 2
+    },
+    {
+      "id": "settings",
+      "label": "Settings Panel",
+      "degree": 2
+    },
+    {
+      "id": "static_HTML",
+      "label": "static HTML",
+      "degree": 1
+    },
+    {
+      "id": "vanilla_HTML_CSS_JS",
+      "label": "vanilla HTML/CSS/JS",
+      "degree": 1
+    },
+    {
+      "id": "Google_Fonts",
+      "label": "Google Fonts",
+      "degree": 1
+    }
+  ],
+  "surprises": [
+    {
+      "source": "admin.html",
+      "target": "Teachers Panel",
+      "source_files": [
+        "AGENTS.md",
+        "admin.html"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "has_panel",
+      "why": "connects across different repos/directories; bridges separate communities; peripheral node `Teachers Panel` unexpectedly reaches hub `admin.html`"
+    },
+    {
+      "source": "admin.html",
+      "target": "Notices Panel",
+      "source_files": [
+        "AGENTS.md",
+        "admin.html"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "has_panel",
+      "why": "connects across different repos/directories; bridges separate communities; peripheral node `Notices Panel` unexpectedly reaches hub `admin.html`"
+    },
+    {
+      "source": "admin.html",
+      "target": "Students Panel",
+      "source_files": [
+        "AGENTS.md",
+        "admin.html"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "has_panel",
+      "why": "connects across different repos/directories; bridges separate communities; peripheral node `Students Panel` unexpectedly reaches hub `admin.html`"
+    },
+    {
+      "source": "admin.html",
+      "target": "Statistics Panel",
+      "source_files": [
+        "AGENTS.md",
+        "admin.html"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "has_panel",
+      "why": "connects across different repos/directories; bridges separate communities; peripheral node `Statistics Panel` unexpectedly reaches hub `admin.html`"
+    },
+    {
+      "source": "admin.html",
+      "target": "Settings Panel",
+      "source_files": [
+        "AGENTS.md",
+        "admin.html"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "has_panel",
+      "why": "connects across different repos/directories; bridges separate communities; peripheral node `Settings Panel` unexpectedly reaches hub `admin.html`"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `admin.html` connect `Community 1` to `Community 0`, `Community 2`, `Community 3`, `Community 4`, `Community 5`, `Community 6`?",
+      "why": "High betweenness centrality (0.887) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Shree Saraswati Secondary School` connect `Community 0` to `Community 1`?",
+      "why": "High betweenness centrality (0.481) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Teachers Panel` connect `Community 2` to `Community 1`?",
+      "why": "High betweenness centrality (0.091) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `static HTML`, `vanilla HTML/CSS/JS`, `Google Fonts` to the rest of the system?",
+      "why": "16 weakly-connected nodes found - possible documentation gaps or missing edges."
+    }
+  ]
+}

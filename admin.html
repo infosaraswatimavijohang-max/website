@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel | Shree Saraswati Secondary School</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--saffron:#E8792A;--crimson:#B5282A;--deep:#1A0F2E;--gold:#F5C842;--cream:#FDF8F0;--green:#2D6A4F;--light-green:#52B788;--text:#2C1810;--muted:#7A6055;--border:#E8D5C4;--shadow:0 8px 30px rgba(0,0,0,0.12);--gradient:linear-gradient(135deg,#667eea 0%,#764ba2 100%);}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-20px);}to{opacity:1;transform:translateX(0);}}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+@keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
+.admin-header{background:linear-gradient(135deg,var(--deep) 0%,#2d1f3d 100%);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,0.15);}
+.admin-header h1{color:var(--gold);font-family:'Playfair Display',serif;font-size:1.4rem;letter-spacing:0.5px;}
+.admin-header a{color:white;text-decoration:none;font-size:0.9rem;padding:0.6rem 1.2rem;background:linear-gradient(135deg,var(--saffron),#d46a24);border-radius:8px;transition:all 0.3s ease;box-shadow:0 4px 15px rgba(232,121,42,0.3);}
+.admin-header a:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(232,121,42,0.4);}
+.admin-container{display:flex;min-height:calc(100vh - 60px);}
+.admin-sidebar{width:70px;background:linear-gradient(180deg,#1a1a2e 0%,#16213e 100%);padding:1rem 0;border-right:none;flex-shrink:0;transition:width 0.3s ease;position:relative;overflow:hidden;}
+.admin-sidebar:hover{width:240px;}
+.admin-sidebar button{width:100%;padding:0.9rem 0;display:flex;align-items:center;justify-content:center;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;color:rgba(255,255,255,0.5);transition:all 0.2s;position:relative;}
+.admin-sidebar:hover button{justify-content:left;padding:0.9rem 1rem;}
+.admin-sidebar button .icon{width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.admin-sidebar button .text{white-space:nowrap;overflow:hidden;max-width:0;opacity:0;transition:all 0.3s ease;font-weight:500;}
+.admin-sidebar:hover button .text{max-width:150px;opacity:1;padding-left:0.8rem;}
+.admin-sidebar button:hover{background:rgba(255,255,255,0.08);color:white;}
+.admin-sidebar button.active{background:rgba(255,255,255,0.12);color:var(--saffron);}
+.admin-sidebar button.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--saffron);}
+.admin-main{flex:1;padding:2.5rem;overflow-y:auto;background:linear-gradient(180deg,var(--cream) 0%,#f5ebe0 100%);}
+.section-title{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--deep);margin-bottom:1.5rem;position:relative;display:inline-block;}
+.section-title::after{content:'';position:absolute;bottom:-8px;left:0;width:60px;height:3px;background:var(--saffron);border-radius:2px;}
+.AdminPanel{display:none;animation:fadeInUp 0.4s ease-out;}
+.AdminPanel.active{display:block;}
+.crud-card{background:white;border-radius:16px;padding:1.5rem;border:1px solid var(--border);margin-bottom:1rem;box-shadow:var(--shadow);transition:all 0.3s ease;animation:fadeInUp 0.5s ease-out;}
+.crud-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.15);}
+.crud-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-top:1rem;}
+.item-card{background:var(--cream);border-radius:12px;padding:1.2rem;border:1px solid var(--border);transition:all 0.3s ease;animation:fadeInUp 0.4s ease-out;animation-fill-mode:both;}
+.item-card:hover{transform:translateY(-5px) scale(1.02);box-shadow:0 8px 25px rgba(0,0,0,0.1);border-color:var(--saffron);}
+.item-card:nth-child(1){animation-delay:0.05s;}
+.item-card:nth-child(2){animation-delay:0.1s;}
+.item-card:nth-child(3){animation-delay:0.15s;}
+.item-card:nth-child(4){animation-delay:0.2s;}
+.item-card:nth-child(5){animation-delay:0.25s;}
+.item-card:nth-child(6){animation-delay:0.3s;}
+.item-card .item-title{font-weight:600;color:var(--deep);}
+.item-card .item-meta{font-size:0.8rem;color:var(--muted);}
+.item-actions{display:flex;gap:0.5rem;margin-top:0.5rem;}
+.btn-edit,.btn-delete{padding:0.5rem;border-radius:6px;border:none;cursor:pointer;font-size:0.8rem;font-weight:500;color:white;flex:1;transition:all 0.2s ease;}
+.btn-edit{background:var(--saffron);}
+.btn-edit:hover{background:#d46a24;transform:scale(1.05);}
+.btn-delete{background:var(--crimson);}
+.btn-delete:hover{background:#9a2224;transform:scale(1.05);}
+.btn-save{background:linear-gradient(135deg,var(--green) 0%,#1e4a38 100%);color:white;padding:0.7rem 1.5rem;border:none;border-radius:8px;cursor:pointer;font-weight:600;transition:all 0.3s ease;box-shadow:0 4px 15px rgba(45,106,79,0.3);}
+.btn-save:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(45,106,79,0.4);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.form-group{margin-bottom:1rem;}
+.form-group label{display:block;font-size:0.8rem;font-weight:600;color:var(--muted);margin-bottom:0.3rem;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.7rem;border-radius:8px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif;font-size:0.9rem;transition:all 0.3s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--saffron);box-shadow:0 0 0 3px rgba(232,121,42,0.15);}
+.form-group input[type="file"]{padding:0.5rem;background:var(--cream);cursor:pointer;}
+.form-group input[type="file"]::file-selector-button{background:linear-gradient(135deg,var(--saffron),#d46a24);color:white;border:none;padding:0.5rem 1rem;border-radius:6px;cursor:pointer;margin-right:1rem;transition:all 0.2s;}
+.form-group input[type="file"]::file-selector-button:hover{transform:scale(1.05);}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.2rem;}
+.stat-box{background:linear-gradient(135deg,#fff 0%,#fafafa 100%);border-radius:16px;padding:1.5rem;border:1px solid var(--border);text-align:center;transition:all 0.3s ease;animation:fadeInUp 0.5s ease-out;animation-fill-mode:both;box-shadow:0 4px 15px rgba(0,0,0,0.05);}
+.stat-box:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,0,0,0.12);}
+.stat-box:nth-child(1){animation-delay:0.1s;background:linear-gradient(135deg,#fff 0%,#fff7ed 100%);border-color:#fed7aa;}
+.stat-box:nth-child(2){animation-delay:0.2s;background:linear-gradient(135deg,#fff 0%,#fef3c7 100%);border-color:#fde68a;}
+.stat-box:nth-child(3){animation-delay:0.3s;background:linear-gradient(135deg,#fff 0%,#dcfce7 100%);border-color:#bbf7d0;}
+.stat-box:nth-child(4){animation-delay:0.4s;background:linear-gradient(135deg,#fff 0%,#e0e7ff 100%);border-color:#c7d2fe;}
+.stat-value{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;background:linear-gradient(135deg,var(--saffron),#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-label{font-size:0.75rem;color:var(--muted);text-transform:uppercase;font-weight:600;letter-spacing:1px;}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;z-index:1000;}
+.modal.open{display:flex;}
+.modal-content{background:white;border-radius:20px;padding:2rem;width:90%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);animation:slideUp 0.3s ease-out;}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;}
+.modal-header h2{font-family:'Playfair Display',serif;font-size:1.4rem;}
+.modal-close{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--muted);}
+.modal-actions{display:flex;gap:1rem;margin-top:1.5rem;}
+.btn-cancel{background:var(--border);color:var(--text);transition:all 0.2s;}
+.btn-cancel:hover{background:#d4c4b0;}
+.toast{position:fixed;bottom:2rem;right:2rem;background:linear-gradient(135deg,var(--green),#1e4a38);color:white;padding:1rem 1.8rem;border-radius:12px;font-weight:600;transform:translateX(120%);transition:transform 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);z-index:1001;box-shadow:0 8px 25px rgba(45,106,79,0.4);}
+.toast.show{transform:translateX(0);}
+.tab-nav{display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;}
+.tab-nav button{padding:0.6rem 1.2rem;border-radius:25px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:0.85rem;font-family:'DM Sans',sans-serif;transition:all 0.3s ease;color:var(--muted);}
+.tab-nav button:hover{background:var(--cream);border-color:var(--saffron);}
+.tab-nav button.active{background:linear-gradient(135deg,var(--saffron),#d97706);border-color:var(--saffron);color:white;box-shadow:0 4px 15px rgba(232,121,42,0.3);}
+.stats-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-bottom:2rem;}
+.summary-card{background:linear-gradient(145deg,#fff,#f8f6f3);border-radius:16px;padding:1.5rem;border:1px solid var(--border);text-align:center;transition:all 0.3s ease;box-shadow:0 4px 15px rgba(0,0,0,0.05);animation:fadeInUp 0.5s ease-out;animation-fill-mode:both;}
+.summary-card:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,0,0,0.1);}
+.summary-card:nth-child(1){animation-delay:0.1s;}
+.summary-card:nth-child(2){animation-delay:0.2s;}
+.summary-card:nth-child(3){animation-delay:0.3s;}
+.summary-card:nth-child(4){animation-delay:0.4s;}
+.summary-card .num{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;background:linear-gradient(135deg,var(--saffron),#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.summary-card .label{font-size:0.8rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}
+.crud-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:1rem;}
+.inquiry-card{background:white;border-radius:12px;padding:1.5rem;border:1px solid var(--border);margin-bottom:1rem;}
+.badge{padding:0.2rem 0.6rem;border-radius:20px;font-size:0.7rem;font-weight:600;}
+.badge-new{background:var(--gold);color:var(--deep);}
+.badge-replied{background:var(--light-green);color:white;}
+.empty-state{text-align:center;padding:3rem;color:var(--muted);}
+.photo-preview{width:60px;height:60px;border-radius:50%;background:var(--saffron);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;color:white;margin:0 auto 0.5rem;}
+.photo-preview.male{background:linear-gradient(135deg,#2D3A8C,#5B6FD4);}
+.photo-preview.female{background:linear-gradient(135deg,#B5282A,#E8792A);}
+.photo-preview img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+table{width:100%;border-collapse:collapse;}
+table thead tr{background:linear-gradient(135deg,#f8f6f3,#f0ebe5);}
+table th{text-align:left;padding:1rem;font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;border-bottom:2px solid var(--border);}
+table td{padding:1rem;border-bottom:1px solid #f0ebe5;transition:background 0.2s;}
+table tbody tr:hover{background:rgba(232,121,42,0.05);}
+table tbody tr{animation:fadeIn 0.3s ease-out;}
+table tbody tr:nth-child(even){background:rgba(0,0,0,0.01);}
+.photo-upload{text-align:center;margin-bottom:1rem;}
+.photo-upload input[type="file"]{display:none;}
+.photo-upload label{display:inline-block;padding:0.7rem 1.5rem;background:linear-gradient(135deg,var(--cream),#f5ebe0);border:2px dashed var(--saffron);border-radius:10px;cursor:pointer;font-size:0.85rem;font-weight:600;color:var(--saffron);transition:all 0.3s;}
+.photo-upload label:hover{background:var(--saffron);color:white;transform:scale(1.02);}
+</style>
+</head>
+<body>
+<!-- LOGIN SCREEN -->
+<div id="login-screen" style="position:fixed;inset:0;background:var(--deep);display:flex;align-items:center;justify-content:center;z-index:9999;">
+  <div style="background:white;border-radius:16px;padding:2.5rem;width:90%;max-width:380px;text-align:center;">
+    <div style="font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--deep);margin-bottom:0.5rem;">Admin Login</div>
+    <div style="color:var(--muted);margin-bottom:2rem;font-size:0.9rem;">Shree Saraswati Secondary School</div>
+    <div style="text-align:left;margin-bottom:1.5rem;">
+      <div style="font-size:0.8rem;font-weight:600;color:var(--muted);margin-bottom:0.4rem;">Username</div>
+      <input type="text" id="login-user" style="width:100%;padding:0.8rem;border-radius:8px;border:1.5px solid var(--border);font-size:1rem;" placeholder="Enter username">
+    </div>
+    <div style="text-align:left;margin-bottom:1.5rem;">
+      <div style="font-size:0.8rem;font-weight:600;color:var(--muted);margin-bottom:0.4rem;">Password</div>
+      <input type="password" id="login-pass" style="width:100%;padding:0.8rem;border-radius:8px;border:1.5px solid var(--border);font-size:1rem;" placeholder="Enter password">
+    </div>
+    <button onclick="login()" style="width:100%;background:var(--saffron);color:white;padding:0.9rem;border-radius:8px;border:none;font-size:1rem;font-weight:600;cursor:pointer;">Login</button>
+    <div id="login-error" style="color:var(--crimson);margin-top:1rem;font-size:0.85rem;display:none;">Invalid username or password</div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL (hidden until login) -->
+<div id="admin-content" style="display:none;">
+<header class="admin-header">
+<h1>Admin Panel</h1>
+<div style="display:flex;gap:0.5rem;">
+<a href="index.html" target="_blank">View Website</a>
+<button onclick="logout()" style="padding:0.5rem 1rem;background:var(--crimson);color:white;border:none;border-radius:6px;cursor:pointer;font-size:0.9rem;">Logout</button>
+</div>
+</header>
+<div class="admin-container">
+<aside class="admin-sidebar">
+<button class="active" onclick="showPanel('dashboard')"><span class="icon">&#9632;</span><span class="text">Dashboard</span></button>
+<button onclick="showPanel('teachers')"><span class="icon">&#128218;</span><span class="text">Teachers</span></button>
+<button onclick="showPanel('staff')"><span class="icon">&#128101;</span><span class="text">Staff</span></button>
+<button onclick="showPanel('notices')"><span class="icon">&#128276;</span><span class="text">Notices</span></button>
+<button onclick="showPanel('students')"><span class="icon">&#128218;</span><span class="text">Students</span></button>
+<button onclick="showPanel('student-details')"><span class="icon">&#128203;</span><span class="text">Student Details</span></button>
+<button onclick="showPanel('events')"><span class="icon">&#128197;</span><span class="text">Events</span></button>
+<button onclick="showPanel('stats')"><span class="icon">&#128202;</span><span class="text">Statistics</span></button>
+<button onclick="showPanel('gallery')"><span class="icon">&#128247;</span><span class="text">Gallery</span></button>
+<button onclick="showPanel('hero')"><span class="icon">&#127910;</span><span class="text">Hero Slideshow</span></button>
+<button onclick="showPanel('admission')"><span class="icon">&#128229;</span><span class="text">Admission Inquiries</span></button>
+<button onclick="showPanel('settings')"><span class="icon">&#9881;</span><span class="text">Settings</span></button>
+</aside>
+<main class="admin-main">
+<div class="AdminPanel active" id="panel-dashboard">
+<h2 class="section-title">Dashboard</h2>
+<div class="stats-summary" id="stats-summary"></div>
+<div class="crud-card"><h3>Recent Activity</h3><div id="recent-activity"></div></div>
+</div>
+<div class="AdminPanel" id="panel-teachers">
+<div class="crud-actions"><h2 class="section-title" style="margin:0">Teachers</h2><button class="btn-save" onclick="openAddTeacher()">+ Add Teacher</button></div>
+<div class="crud-card"><div class="tab-nav"><button class="active" onclick="filterTeachers('all',this)">All</button><button onclick="filterTeachers('ECD',this)">ECD</button><button onclick="filterTeachers('Primary',this)">Primary</button><button onclick="filterTeachers('Secondary',this)">Secondary</button></div><div class="crud-grid" id="teachers-list"></div></div>
+</div>
+<div class="AdminPanel" id="panel-staff">
+  <div class="crud-actions">
+    <h2 class="section-title" style="margin:0">Staff</h2>
+    <button class="btn-save" onclick="openAddStaff()">+ Add Staff</button>
+  </div>
+  <div class="crud-card">
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+        <thead>
+          <tr style="background:#f5f5f5;">
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">S.N</th>
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">Name</th>
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">Phone</th>
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">DOB</th>
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="staff-list"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="AdminPanel" id="panel-notices">
+<div class="crud-actions"><h2 class="section-title" style="margin:0">Notices</h2><button class="btn-save" onclick="addNotice()">+ Add Notice</button></div>
+<div class="crud-grid" id="notices-list"></div>
+</div>
+<div class="AdminPanel" id="panel-students">
+  <div class="crud-actions"><h2 class="section-title" style="margin:0">Students by Class</h2><button class="btn-save" onclick="addStudent()">+ Add Class</button></div>
+  <div class="crud-card"><div class="stats-grid" id="students-list"></div></div>
+</div>
+<div class="AdminPanel" id="panel-student-details">
+  <div class="crud-actions">
+    <h2 class="section-title" style="margin:0">Student Details</h2>
+    <div class="tab-nav" style="margin:0.5rem 0;">
+      <button class="active" onclick="switchStudentTab('active',this)" id="tab-active">Active Students</button>
+      <button onclick="switchStudentTab('dropout',this)" id="tab-dropout">Dropouts</button>
+      <button onclick="switchStudentTab('passout',this)" id="tab-passout">Passed Out</button>
+    </div>
+    <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+      <input type="text" id="student-search" placeholder="Search students..." style="padding:0.4rem;border:1px solid #ddd;border-radius:4px;" onkeyup="filterStudentDetails()">
+      <select id="student-class-filter" style="padding:0.4rem;border:1px solid #ddd;border-radius:4px;" onchange="filterStudentDetails()">
+        <option value="">All Classes</option>
+        <option value="ECD/PPC">ECD</option>
+        <option value="1">Grade 1</option>
+        <option value="2">Grade 2</option>
+        <option value="3">Grade 3</option>
+        <option value="4">Grade 4</option>
+        <option value="5">Grade 5</option>
+        <option value="6">Grade 6</option>
+        <option value="7">Grade 7</option>
+        <option value="8">Grade 8</option>
+        <option value="9">Grade 9</option>
+        <option value="10">Grade 10</option>
+        <option value="11">Grade 11</option>
+        <option value="12">Grade 12</option>
+      </select>
+      <button class="btn-save" onclick="openAddStudentDetail()">+ Add Student</button>
+    </div>
+  </div>
+  <div class="crud-card">
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+        <thead>
+          <tr style="background:#f5f5f5;">
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">S.N</th>
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">Photo</th>
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">Name</th>
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">Gender</th>
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">Class</th>
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">Section</th>
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">Father</th>
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">Mother</th>
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">Guardian</th>
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">Phone</th>
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">Address</th>
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">DOB</th>
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">Age</th>
+            <th style="padding:0.6rem;text-align:left;border-bottom:1px solid #ddd;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="student-details-list"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="AdminPanel" id="panel-events">
+<div class="crud-actions"><h2 class="section-title" style="margin:0">Events</h2><button class="btn-save" onclick="addEvent()">+ Add Event</button></div>
+<div class="crud-card"><div class="tab-nav"><button class="active" onclick="filterEvents('all',this)">All</button><button onclick="filterEvents('academic',this)">Academic</button><button onclick="filterEvents('sports',this)">Sports</button><button onclick="filterEvents('cultural',this)">Cultural</button></div><div class="crud-grid" id="events-list"></div></div>
+</div>
+<div class="AdminPanel" id="panel-stats">
+<h2 class="section-title">School Statistics</h2>
+<div class="crud-card"><h3>Quick Stats</h3><div class="form-row"><div class="form-group"><label>Total Students</label><input type="number" id="stat-total"></div><div class="form-group"><label>Male Students</label><input type="number" id="stat-male"></div><div class="form-group"><label>Female Students</label><input type="number" id="stat-female"></div><div class="form-group"><label>Teaching Staff</label><input type="number" id="stat-staff"></div></div><button class="btn-save" onclick="saveStats()">Save Statistics</button></div>
+</div>
+<div class="AdminPanel" id="panel-gallery">
+<div class="crud-actions"><h2 class="section-title" style="margin:0">Gallery</h2><button class="btn-save" onclick="addGallery()">+ Add Image</button></div>
+<div class="crud-grid" id="gallery-list"></div>
+</div>
+<div class="AdminPanel" id="panel-hero">
+<div class="crud-actions"><h2 class="section-title" style="margin:0">Hero Slideshow</h2><button class="btn-save" onclick="addHeroImage()">+ Add Image</button></div>
+<div class="crud-card">
+<p style="margin-bottom:1rem;color:var(--muted);font-size:0.9rem;">Add images for the homepage hero slideshow. Recommended size: 1920x1080px</p>
+<div class="crud-grid" id="hero-list"></div>
+</div>
+</div>
+<div class="AdminPanel" id="panel-admission">
+<h2 class="section-title">Admission Inquiries <button class="btn-delete" style="float:right;font-size:0.75rem;padding:0.3rem 0.8rem;" onclick="clearAllInquiries()">Clear All</button></h2>
+<div id="inquiries-list"></div>
+</div>
+<div class="AdminPanel" id="panel-settings">
+<h2 class="section-title">Settings</h2>
+<div class="crud-card"><h3>School Information</h3><div class="form-row"><div class="form-group"><label>School Name</label><input type="text" id="set-name"></div><div class="form-group"><label>Head Teacher</label><input type="text" id="set-ht"></div></div><div class="form-row"><div class="form-group"><label>Phone</label><input type="text" id="set-phone"></div><div class="form-group"><label>Email</label><input type="text" id="set-email"></div></div><div class="form-group"><label>Address</label><input type="text" id="set-address"></div><div class="form-group"><label>IEMIS Code</label><input type="text" id="set-iemis"></div><button class="btn-save" onclick="saveSettings()">Save Settings</button></div></div>
+<div class="crud-card" style="margin-top:1rem;background:#fee;">
+<h3>Data Management</h3><p style="font-size:0.85rem;color:#666;">Clear all stored data and reset to defaults.</p><button class="btn-delete" onclick="resetAllData()">Reset All Data</button></div>
+</div>
+</main>
+</div>
+<div class="modal" id="modal">
+<div class="modal-content">
+<div class="modal-header"><h2 id="modal-title">Add New</h2><button class="modal-close" onclick="closeModal()">&times;</button></div>
+<div id="modal-body"></div>
+<div class="modal-actions"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-save" id="modal-save-btn" onclick="saveModalData()">Save</button></div>
+</div>
+</div>
+<div class="toast" id="toast">Saved!</div>
+<script>
+// Login credentials from stored data or defaults
+var loginUser = 'amitrazbanc';
+var loginPass = 'school1122@';
+
+// Check if already logged in
+var isLoggedIn = sessionStorage.getItem('adminLoggedIn');
+if(isLoggedIn === 'true'){
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-content').style.display = 'block';
+}
+
+function login(){
+  var user = document.getElementById('login-user').value;
+  var pass = document.getElementById('login-pass').value;
+  if(user === loginUser && pass === loginPass){
+    sessionStorage.setItem('adminLoggedIn','true');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-content').style.display = 'block';
+  }else{
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+
+function logout(){
+  sessionStorage.removeItem('adminLoggedIn');
+  location.reload();
+}
+
+var defaultData = {
+  login_user: 'amitrazbanc',
+  login_pass: 'school1122@',
+  teachers: [
+    {name:'Arjun Prashad Sharma Dhakal',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Gayatri Acharya Regmi',g:'F',q:'',l:'',s:'',p:''},
+    {name:'Kalpana Bhattarai',g:'F',q:'',l:'',s:'',p:''},
+    {name:'Shreedhar Gautam',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Maniram Gautam',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Amrita Parajuli',g:'F',q:'',l:'',s:'',p:''},
+    {name:'Dhan Bahadur Kala',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Homnath Pokhrel',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Harikala Nepali',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Amit Rajbanshi',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Keshav Raj Dhakal',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Bhojraj Dhakal',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Devi Kumari Thapa',g:'F',q:'',l:'',s:'',p:''},
+    {name:'Santosh Basnet',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Man Bahadur Thapa',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Surendra Prasad Poudel',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Denim Kumar Ale',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Shristi Bhandari',g:'F',q:'',l:'',s:'',p:''},
+    {name:'Chitra Bahadur Tharu',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Chhabilal Bhandari',g:'M',q:'',l:'',s:'Head Teacher',p:''},
+    {name:'Kalpana Bhandari',g:'F',q:'',l:'',s:'',p:''},
+    {name:'Hem Raj Timilsina',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Mahesh Paudel',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Indira Pulami',g:'F',q:'',l:'',s:'',p:''},
+    {name:'Prem Shankar Singh',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Sarthak Aryal',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Chemkali Kala Shrees',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Bipana Pariyar',g:'F',q:'',l:'',s:'',p:''},
+    {name:'Dhanesh Kumar Barai',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Sunil Ram Luhar',g:'M',q:'',l:'',s:'',p:''},
+    {name:'Manisha Sunar',g:'F',q:'',l:'',s:'',p:''}
+  ],
+  notices: [
+    {c:'exam',t:'SEE Exam Schedule',b:'Grade 10 exam details',d:'Chaitra 2082'},
+    {c:'admission',t:'Admission Open',b:'Apply now for 2083',d:'Baisakh 2083'}
+  ],
+  students: [
+    {c:'ECD',n:24,s:'Pre-School'},{c:'Grade 1',n:9,s:'Basic'},{c:'Grade 2',n:11,s:'Basic'},{c:'Grade 3',n:10,s:'Basic'},{c:'Grade 4',n:30,s:'Basic'},{c:'Grade 5',n:17,s:'Basic'},{c:'Grade 6',n:28,s:'Basic'},{c:'Grade 7',n:17,s:'Basic'},{c:'Grade 8',n:9,s:'Basic'},{c:'Grade 9',n:30,s:'Secondary'},{c:'Grade 10',n:28,s:'Secondary'},{c:'Grade 11',n:21,s:'Higher'},{c:'Grade 12',n:11,s:'Higher'}
+  ],
+  gallery: [
+    {c:'Farewell 2082',i:0,imgs:[]},
+    {c:'Sports Day',i:1,imgs:[]},
+    {c:'Annual Function',i:2,imgs:[]},
+    {c:'Exam',i:3,imgs:[]},
+    {c:'Other',i:4,imgs:[]}
+  ],
+  hero: [],
+  events: [
+    {c:'academic',t:'Annual Exam',d:'Chaitra 2082',d2:'Exam hall',img:''},
+    {c:'sports',t:'Sports Day',d:'Baisakh 2083',d2:'School ground',img:''},
+    {c:'cultural',t:'Culture Program',d:'Ashoj 2082',d2:'Assembly hall',img:''}
+  ],
+  inquiries: [],
+  staff: [
+    {name:'Manju Acharya Bhandari',phone:'9865262797',dob:'2050-06-08'},
+    {name:'Bishnu Prasad Bhandari',phone:'9843980249',dob:'2046-07-18'},
+    {name:'Laxmi Bk',phone:'9849445253',dob:'2042-02-09'},
+    {name:'Nawraj Dhakal',phone:'9861515146',dob:'2047-04-29'},
+    {name:'Homnath Bhandari',phone:'9865260222',dob:'2031-03-07'},
+    {name:'Laxman Pulami',phone:'9843285442',dob:'2048-07-11'}
+  ],
+  studentDetails: [
+    {name:'Aaditya  Neupane',g:'M',f:'Madhu Neupane',m:'Sapana Neupane',c:'7',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-07-28',age:12,guard:'Sapana Neupane',guardph:''},
+    {name:'Aaditya B.K',g:'M',f:'Krishna Bahadur Bk',m:'Saraswati BK',c:'4',sec:'G',addr:'Satyawati-6, Gulmi',dob:'2073-01-03',age:9,guard:'Saraswati BK',guardph:'9812346286'},
+    {name:'Aadvik Bhattarai',g:'M',f:'Krishna Prasad Bhattarai',m:'Amrita Parajuli',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2077-06-27',age:5,guard:'Amrita Parajuli',guardph:'9844724485'},
+    {name:'Aagaman Bk',g:'M',f:'Arjun Bk',m:'Manju Bk',c:'7',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-04-27',age:12,guard:'Manju Bk',guardph:''},
+    {name:'Aaishu  BK',g:'F',f:'Sant Bahadur BK',m:'Tara BK',c:'ECD/PPC',sec:'',addr:'Ribdikot-6, Palpa',dob:'2078-11-02',age:4,guard:'Tara BK',guardph:'9849444468'},
+    {name:'Aakash Bk',g:'M',f:'Gokul Bk',m:'Tika Bk',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2071-08-29',age:11,guard:'Tika Bk',guardph:'9846807630'},
+    {name:'Aarati BK',g:'F',f:'Gokul Bahadur B.k.',m:'Tika B.K',c:'9',sec:'G',addr:'Satyawati-6, Gulmi',dob:'2068-10-29',age:14,guard:'Tika B.K',guardph:'9765494324'},
+    {name:'Aarati Dhakal',g:'F',f:'Kushmakhar Dhakal',m:'Jamuna Dhakal',c:'11',sec:'T',addr:'Satyawati-6, Gulmi',dob:'2065-09-15',age:17,guard:'Kushmakhar Dhakal',guardph:'9844748843'},
+    {name:'Aarov Pariyar',g:'M',f:'Rajin Pariyar',m:'Anita Pariyar',c:'2',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-03-28',age:10,guard:'Anita Pariyar',guardph:'9860823401'},
+    {name:'Aarush Bk (A)',g:'M',f:'Anil  BK',m:'Rita BK',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2076-08-30',age:6,guard:'Rita BK',guardph:'9765396422'},
+    {name:'Aarush Bk (B)',g:'M',f:'Govinda BK',m:'Puspa Bk',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2076-04-16',age:6,guard:'Puspa Bk',guardph:'9815296372'},
+    {name:'Aarya  Pariyar',g:'F',f:'Dil Bahadur Sunar',m:'Asmi Sunar',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2078-01-27',age:4,guard:'Asmi Sunar',guardph:'9867281782'},
+    {name:'Aashika  Gaire',g:'F',f:'Tikaram Gaire',m:'Sita Gaire',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2079-02-11',age:3,guard:'Sita Gaire',guardph:'9762742722'},
+    {name:'AASHISH BHANDARI',g:'M',f:'LAKSHMAN PRASAD BHANDARI',m:'GANGA BHANDARI',c:'9',sec:'T',addr:'Satyawati-6, Gulmi',dob:'2067-04-12',age:15,guard:'LAKSHMAN PRASAD BHANDARI',guardph:'9867160565'},
+    {name:'Aasma Shrestha',g:'F',f:'Narayan Shrestha',m:'Sita Shrestha',c:'9',sec:'T',addr:'Satyawati-6, Gulmi',dob:'2068-03-10',age:14,guard:'SITA SHRESTHA',guardph:'9869929009'},
+    {name:'Aastha  BK',g:'F',f:'Govinda  Bahadur BK',m:'Puspa Bk',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2071-02-04',age:11,guard:'Puspa Bk',guardph:'9779765396'},
+    {name:'Aayan Bhandari',g:'M',f:'Dadiram Bhandari',m:'Bishnu Bhandari',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2073-09-06',age:9,guard:'Bishnu Bhandari',guardph:'9861026273'},
+    {name:'Aayan BK',g:'M',f:'Raju BK',m:'Muna BK',c:'2',sec:'',addr:'Satyawati-6, Gulmi',dob:'2073-07-25',age:9,guard:'Muna BK',guardph:'9742363937'},
+    {name:'Aayush  Sunar',g:'M',f:'Sudarshan Sunar',m:'Himkala Sunar',c:'10',sec:'G',addr:'Satyawati-6, Gulmi',dob:'2066-04-03',age:16,guard:'Himkala Sunar',guardph:'9863343386'},
+    {name:'Aayush Bhandari',g:'M',f:'Gopal Prasad Bhandari',m:'Rita kandel Bhandari',c:'10',sec:'A',addr:'Satyawati-5, Gulmi',dob:'2066-02-19',age:16,guard:'Gopal Prasad Bhandari',guardph:''},
+    {name:'Aayush BK',g:'M',f:'Raju BK',m:'Muna BK',c:'5',sec:'',addr:'Rurukshetra-6, Gulmi',dob:'2071-12-19',age:11,guard:'Muna BK',guardph:'9867883760'},
+    {name:'Aayush Dhakal',g:'M',f:'Tikaram Dhakal',m:'Jayantadevi Dhakal',c:'10',sec:'G',addr:'Satyawati-6, Gulmi',dob:'2066-02-20',age:16,guard:'Jayantadevi Dhakal',guardph:'Jayantadevi Dhakal'},
+    {name:'Aayusha Neupane',g:'F',f:'Giriraj Neupane',m:'Bimala Neupane',c:'7',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-07-20',age:12,guard:'Bimala Neupane',guardph:''},
+    {name:'Aayuska Bk',g:'F',f:'Chiran Bk',m:'Sabita Bk',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2077-09-15',age:5,guard:'Sarita Bk',guardph:'9768370835'},
+    {name:'Abishek Nepali',g:'M',f:'Suraj Nepali',m:'Rekha Nepali',c:'5',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-04-09',age:10,guard:'Rekha Nepali',guardph:'9867165181'},
+    {name:'Abiskar  Nepali',g:'M',f:'Gange Bahadur Nepali',m:'Nisha Nepali',c:'7',sec:'',addr:'Satyawati-6, Gulmi',dob:'2069-08-05',age:13,guard:'Nisha Nepali',guardph:''},
+    {name:'Aisha  Sunar',g:'F',f:'Bishnu Sunar',m:'Indira Sunar',c:'9',sec:'T',addr:'Rurukshetra-4, Gulmi',dob:'2068-06-15',age:14,guard:'Indira Sunar',guardph:'9869456004'},
+    {name:'Alija  Pandey',g:'F',f:'Arjun Pandey',m:'Laxmi BK',c:'ECD/PPC',sec:'',addr:'Satyawati-3, Gulmi',dob:'2079-07-03',age:3,guard:'Arjun Pandey',guardph:'9862243984'},
+    {name:'Aman Gaire',g:'M',f:'Tikaram Gaire',m:'Sita Gaire',c:'3',sec:'',addr:'Satyawati-6, Gulmi',dob:'2074-01-25',age:8,guard:'Sita Gaire',guardph:'9849042765'},
+    {name:'Anam Bk',g:'F',f:'Netra Bahadur Bk',m:'Barsha Bk',c:'7',sec:'',addr:'Satyawati-6, Gulmi',dob:'2069-03-12',age:13,guard:'Barsha Bk',guardph:''},
+    {name:'Anamika  B.K',g:'F',f:'Krishna Bahadur B.K',m:'MIna B.K',c:'8',sec:'',addr:'Satyawati-6, Gulmi',dob:'2069-03-26',age:13,guard:'MIna B.K',guardph:'9864568256'},
+    {name:'Anamika  Pariyar',g:'F',f:'Amrit Darji',m:'Harikala Nepali',c:'8',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-06-24',age:12,guard:'Harikala Nepali',guardph:'9867542480'},
+    {name:'Ananiya Sunar',g:'F',f:'Ashok Sunar',m:'Anjali Sunar',c:'2',sec:'',addr:'Satyawati-6, Gulmi',dob:'2074-07-01',age:8,guard:'Anjali Sunar',guardph:'9865500921'},
+    {name:'Anish Bhandari',g:'M',f:'Madhav Prasad Bhandari',m:'ChandraKala Bhandari',c:'10',sec:'A',addr:'Satyawati-6, Gulmi',dob:'2068-03-26',age:14,guard:'ChandraKala Bhandari',guardph:'9845698103'},
+    {name:'Anisha  Sunar',g:'F',f:'Kul Bahadur Sunar',m:'Dil Kumari Sunar',c:'12',sec:'',addr:'Satyawati-6, Gulmi',dob:'2062-05-13',age:20,guard:'Dil Kumari Sunar',guardph:'Dil Kumari Sunar'},
+    {name:'Anita   Sunar',g:'F',f:'Netra Sunar',m:'Sita Sunar',c:'7',sec:'',addr:'Satyawati-6, Gulmi',dob:'2069-03-01',age:13,guard:'Sita Sunar',guardph:''},
+    {name:'Anita Sunar',g:'F',f:'Purna Bahadur Sunar',m:'Karma Kumari Sunar',c:'8',sec:'',addr:'Satyawati-6, Gulmi',dob:'2067-07-29',age:15,guard:'Karma Kumari Sunar',guardph:'9765500921'},
+    {name:'Anjali B.K.',g:'F',f:'Om Bahadur BK',m:'Shanti Bk',c:'11',sec:'',addr:'Satyawati-6, Gulmi',dob:'2063-08-24',age:19,guard:'9865295622',guardph:'9866139513'},
+    {name:'Anjana Sunar',g:'F',f:'Hari Bahadur Sunar',m:'Yamkala Sunar',c:'12',sec:'',addr:'Satyawati-6, Gulmi',dob:'2064-12-15',age:18,guard:'Yamkala Sunar',guardph:'Yamkala Sunar'},
+    {name:'Ankita BK',g:'F',f:'Krishna Bahadur Bk',m:'Mina Bk',c:'5',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-06-26',age:10,guard:'Mina Bk',guardph:''},
+    {name:'Ankita Gautam',g:'F',f:'Maniram Gautam',m:'Laxmi Gautam',c:'7',sec:'G',addr:'Sainamaina-3, Rupandehi',dob:'2071-10-15',age:11,guard:'Laxmi Gautam',guardph:'9857032459'},
+    {name:'Anu  Gaire Nepali',g:'F',f:'Amit Gaire Nepali',m:'Punam Gaire Nepali',c:'2',sec:'',addr:'Satyawati-6, Gulmi',dob:'2075-08-20',age:7,guard:'Punam Gaire Nepali',guardph:'9846590466'},
+    {name:'Anuja Bk',g:'F',f:'Kul Bahadur Bk',m:'Ganga Devi Bk',c:'5',sec:'',addr:'Satyawati-6, Gulmi',dob:'2069-10-18',age:13,guard:'Ganga Devi Bk',guardph:'9702849376'},
+    {name:'Anuja Sunar',g:'F',f:'Ashok sunar',m:'Anjali sunar',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-02-07',age:10,guard:'Anjali sunar',guardph:'9765500921'},
+    {name:'Anup  Bk',g:'M',f:'Naryan Bk',m:'Sudha Bk',c:'6',sec:'',addr:'Chhatrakot-1, Gulmi',dob:'2068-03-06',age:14,guard:'Sudha Bk',guardph:'9862549625'},
+    {name:'Anusha B.K',g:'F',f:'Kaluram B.K',m:'Biba BK',c:'8',sec:'',addr:'Satyawati-6, Gulmi',dob:'2069-04-20',age:13,guard:'Biba BK',guardph:'9763594256'},
+    {name:'Anuska  BK',g:'F',f:'Jagat Bahadur BK',m:'BImala BK',c:'ECD/PPC',sec:'',addr:'Satyawati-5, Gulmi',dob:'2078-06-02',age:4,guard:'Bimala BK',guardph:'9745425287'},
+    {name:'Anuska Bhandari',g:'F',f:'Laxman Bhandari',m:'Sita Bhandari',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2071-08-29',age:11,guard:'Sita Bhandari',guardph:'9746383787'},
+    {name:'Anuska BK',g:'F',f:'Chiran Sunar',m:'Sarita BK',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-06-26',age:10,guard:'Sarita BK',guardph:'9811524018'},
+    {name:'Anuska Sunar',g:'F',f:'Suraj Sunar',m:'Rekha Sunar',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2071-05-15',age:11,guard:'Rekha Sunar',guardph:'9800728763'},
+    {name:'Apsan Pariyar',g:'M',f:'Abinash Darji  Pariyar',m:'Junu Pariyar',c:'9',sec:'G',addr:'Satyawati-6, Gulmi',dob:'2067-06-06',age:15,guard:'Junu Pariyar',guardph:'9841101487'},
+    {name:'Arun  Gaire',g:'M',f:'Jhavindra Gaire',m:'Bipana Gaire',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-07-11',age:10,guard:'Bipana Gaire',guardph:'9766250559'},
+    {name:'Aruna bk',g:'F',f:'jhak bahadur bk',m:'Binu b.k.',c:'6',sec:'',addr:'Satyawati-5, Gulmi',dob:'2070-06-15',age:12,guard:'jhakbahadur bk',guardph:'974004867'},
+    {name:'Ashwin Bhandari',g:'M',f:'Rishiram Bhandari',m:'Kalpana Bhandari',c:'2',sec:'',addr:'Satyawati-6, Gulmi',dob:'2075-07-13',age:7,guard:'Kalpana Bhandari',guardph:'Kalpana Bhandari'},
+    {name:'Barsha  Neupane',g:'F',f:'Tanka Prasad Neupane',m:'Manrupa Neupane',c:'3',sec:'',addr:'Satyawati-6, Gulmi',dob:'2074-05-20',age:8,guard:'Manrupa Neupane',guardph:'9868202800'},
+    {name:'Bhanu Sunar',g:'M',f:'Krishna Sunar',m:'Priya Sunar',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-01-17',age:12,guard:'Priya Sunar',guardph:''},
+    {name:'Bibash Bhandari',g:'M',f:'Purushottam Bhandari',m:'Basanta Bhandari',c:'10',sec:'A',addr:'Satyawati-6, Gulmi',dob:'2068-12-10',age:14,guard:'Purushottam Bhandari',guardph:'9861890665'},
+    {name:'Bikshya Gaire Sarki',g:'F',f:'Munna Gaire Sharki',m:'Sunita Gaire Sharki',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2076-06-16',age:6,guard:'Sunita Gaire Sharki',guardph:'9745429998'},
+    {name:'Bimal  Pariyar',g:'M',f:'Krishna Pariyar',m:'Shanti Pariyar',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2071-02-14',age:11,guard:'Shanti Pariyar',guardph:'9762255325'},
+    {name:'Binita  Sunar',g:'F',f:'Bikram Sunar',m:'Laskhima Sunar',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2079-07-12',age:3,guard:'Laskhima Sunar',guardph:'9745425287'},
+    {name:'Binod Bhari',g:'M',f:'Shakti Bhari',m:'Jamuna Shrestha',c:'3',sec:'',addr:'Kanchan-1, Rupandehi',dob:'2075-03-10',age:7,guard:'Jamuna Shrestha',guardph:'9867384364'},
+    {name:'Bipana Pariyar',g:'F',f:'Om Prakash Bitalu',m:'Kalpana Bitalu',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2069-09-26',age:13,guard:'Kalpana Bitalu',guardph:'9849908237'},
+    {name:'Bipisha  Rana',g:'F',f:'Ishowari Prasad Rana',m:'Dhankala Rana',c:'1',sec:'',addr:'Satyawati-6, Gulmi',dob:'2076-06-03',age:6,guard:'Dhankala Rana',guardph:'9869923546'},
+    {name:'Bishal  Bhandari',g:'M',f:'Birendra Bhandari',m:'Maya Pandey Bhandari',c:'10',sec:'A',addr:'Satyawati-5, Gulmi',dob:'2066-05-23',age:16,guard:'Maya Pandey Bhandari',guardph:'9742908904'},
+    {name:'BIshal  Sunar',g:'M',f:'Dhan Bahadur Sunar',m:'Sita Sunar',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2076-06-01',age:6,guard:'Sita Sunar',guardph:'9742366045'},
+    {name:'Bishal Bhandari',g:'M',f:'Purushottam Bhandari',m:'Basanta Bhandari',c:'7',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-08-12',age:12,guard:'Basanta Bhandari',guardph:''},
+    {name:'Bishal Dhakal',g:'M',f:'Ishwori Dhakal',m:'Ishwora Dhakal',c:'10',sec:'G',addr:'Satyawati-6, Gulmi',dob:'2066-05-11',age:16,guard:'Ishwora Dhakal',guardph:'9847149237'},
+    {name:'Debendra Bk',g:'M',f:'Lal Bahadur Bk',m:'Indra Bk',c:'7',sec:'',addr:'Satyawati-6, Gulmi',dob:'2069-11-03',age:13,guard:'Indra Bk',guardph:''},
+    {name:'Deepshika BK',g:'F',f:'Buddha Bahadur BK',m:'Saraswati BK',c:'5',sec:'',addr:'Satyawati-7, Gulmi',dob:'2072-02-13',age:10,guard:'Saraswati BK',guardph:'9847430407'},
+    {name:'Denis Gaire',g:'M',f:'Debit Gaire',m:'Sulastika Gaire',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2073-08-18',age:9,guard:'Sulastika Gaire',guardph:'9867152494'},
+    {name:'Dinesh BK',g:'M',f:'Baburam BK',m:'Lila BK',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-08-18',age:10,guard:'Lila BK',guardph:'9811532526'},
+    {name:'Dipika  Bhandari',g:'F',f:'Deepak Bhandari',m:'Kalpana Bhandari',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2077-03-26',age:5,guard:'Kalpana Bhandari',guardph:'9869453819'},
+    {name:'Dipika  Bk',g:'F',f:'Baburam Bk',m:'Lila Bk',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-03-29',age:12,guard:'Lila Bk',guardph:''},
+    {name:'Dipika Sunar',g:'F',f:'Durga Bdr Sunar',m:'Sita Sunar',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2073-09-22',age:9,guard:'Sita Sunar',guardph:'9703110613'},
+    {name:'Dipisha BK',g:'F',f:'Dipak Bk',m:'Manisha Bk',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2071-10-02',age:11,guard:'Manisha Bk',guardph:'9869423837'},
+    {name:'Dipshan Bhandari',g:'M',f:'Dipak Bhandari',m:'Kalpana Bhandari',c:'8',sec:'',addr:'Satyawati-6, Gulmi',dob:'2069-07-04',age:13,guard:'Kalpana Bhandari',guardph:'Kalpana Bhandari'},
+    {name:'Diya  Baral',g:'F',f:'Kul bahadur Baral',m:'lemu kumari baral',c:'9',sec:'T',addr:'Bagnaskali-6, Palpa',dob:'2068-05-16',age:14,guard:'Lemu kumari baral',guardph:'9769816056'},
+    {name:'Durga  Devi Dhakal',g:'F',f:'Govinda Dhakal',m:'Usha Dhakal',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2078-12-21',age:4,guard:'Usha Dhakal',guardph:'9766497507'},
+    {name:'Gita Thapa',g:'F',f:'Hari thapa',m:'Tara Thapa',c:'9',sec:'G',addr:'Satyawati-7, Gulmi',dob:'2066-12-27',age:16,guard:'Tara Thapa',guardph:'9742366019'},
+    {name:'Hilsan  Galami',g:'M',f:'Ashok Galami',m:'Santu Galami',c:'6',sec:'',addr:'Satyawati-8, Gulmi',dob:'2072-01-18',age:10,guard:'Santu Galami',guardph:'9869315003'},
+    {name:'Himal  Sunar',g:'M',f:'Hari Bahadur Sunar',m:'Yamkala Sunar',c:'10',sec:'G',addr:'Satyawati-6, Gulmi',dob:'2066-05-17',age:16,guard:'Yamkala Sunar',guardph:'9749826348'},
+    {name:'Ichchha Pariyar',g:'F',f:'Om Prakash Pariyar',m:'Kalpana Pariyar',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2077-04-26',age:5,guard:'Kalpana Pariyar',guardph:'9849908237'},
+    {name:'Ishan  Sharma',g:'M',f:'Hem Raj Timilsina',m:'Dammarkala Joshi',c:'1',sec:'',addr:'Bannigadhi Jayagadh-4, Achham',dob:'2077-02-12',age:5,guard:'Dammarkala Joshi',guardph:'9848598106'},
+    {name:'Iswara   Sunar',g:'F',f:'Rajkumar  Sunar',m:'Gita sunar',c:'5',sec:'',addr:'Satyawati-7, Gulmi',dob:'2070-10-13',age:12,guard:'Gita Sunar',guardph:'9860823678'},
+    {name:'Janak Dhakal',g:'M',f:'Tikaram Dhakal',m:'Laxmi Dhakal',c:'9',sec:'T',addr:'Satyawati-6, Gulmi',dob:'2069-04-17',age:13,guard:'Tikaram Dhakal',guardph:'9867100060'},
+    {name:'Karuna Bhandari',g:'F',f:'Bishnu Prasad Bhandari',m:'Manju Aacharya Bhandari',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2074-03-16',age:8,guard:'Manju Aacharya Bhandari',guardph:'9843980249'},
+    {name:'Kashmik Budhathoki',g:'F',f:'Kamal Budhathoki',m:'Laxmi Budhathoki',c:'9',sec:'G',addr:'Satyawati-7, Gulmi',dob:'2067-06-09',age:15,guard:'Laxmi Budhathoki',guardph:''},
+    {name:'Keshab Sunar',g:'M',f:'Karma Sunar',m:'Bishu Sunar',c:'10',sec:'G',addr:'Satyawati-6, Gulmi',dob:'2069-09-25',age:13,guard:'',guardph:''},
+    {name:'Khusi  BK',g:'F',f:'Prabin BK',m:'Pramila BK',c:'1',sec:'',addr:'Satyawati-6, Gulmi',dob:'2076-04-02',age:6,guard:'Pramila BK',guardph:'9849908234'},
+    {name:'Khusi Sunar',g:'F',f:'Dil bahadur Sunar',m:'Rannata Sunar',c:'9',sec:'G',addr:'Satyawati-6, Gulmi',dob:'2068-04-28',age:14,guard:'Dil bahadur Sunar',guardph:'9821949680'},
+    {name:'Khusi Timilsina',g:'F',f:'Hem Raj Timilsina',m:'Dambarakala Joshi Timilsina',c:'5',sec:'G',addr:'Bannigadhi Jayagadh-4, Achham',dob:'2073-09-16',age:9,guard:'Dambarakala Joshi Timilsina',guardph:'9848598106'},
+    {name:'Kismat  Bhandari',g:'M',f:'Rishiram Bhandari',m:'Kalpana  Bhattarai Bhandari',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2071-09-10',age:11,guard:'Kalpana  Bhattarai Bhandari',guardph:'9869125925'},
+    {name:'Krishtima Budhathoki',g:'F',f:'Krishna  Prasad Budhathoki',m:'Ghanu Kumari  Budhathoki',c:'10',sec:'G',addr:'Satyawati-7, Gulmi',dob:'2067-03-11',age:15,guard:'',guardph:''},
+    {name:'Kritika  Sah',g:'F',f:'Nabin Kumar Sah',m:'Sunita Kumari Sah',c:'1',sec:'',addr:'Karjanha-2, Siraha',dob:'2075-12-28',age:7,guard:'Sunita Kumari Sah',guardph:'9769816110'},
+    {name:'Kunjan Bhandari',g:'M',f:'Kumar Chhetri',m:'Rama Bhandari',c:'11',sec:'T',addr:'Satyawati-7, Gulmi',dob:'2066-03-09',age:16,guard:'Rama Bhandari',guardph:'9869793222'},
+    {name:'Kushal  Damai',g:'M',f:'Jit Bahadur Damai',m:'Sita Damai',c:'10',sec:'G',addr:'Satyawati-7, Gulmi',dob:'2065-10-15',age:17,guard:'',guardph:''},
+    {name:'Kushal Bhandari',g:'M',f:'Bishnu Prasad Bhandari',m:'Manju Acharya Bhandari',c:'2',sec:'',addr:'Satyawati-6, Gulmi',dob:'2075-12-04',age:7,guard:'Manju Acharya Bhandari',guardph:'9867266930'},
+    {name:'Kushal Bhandari',g:'M',f:'Kumar Chhetri',m:'Roma Chhetri',c:'12',sec:'T',addr:'Satyawati-7, Gulmi',dob:'2064-04-31',age:18,guard:'Roma Pandey Bhandari',guardph:'9869793222'},
+    {name:'Laxmi BK',g:'F',f:'Ram Bahadur BK',m:'Mithu BK',c:'9',sec:'G',addr:'Musikot-5, Gulmi',dob:'2066-04-06',age:16,guard:'Mithu BK',guardph:'9769295430'},
+    {name:'Laxmi Rokaya',g:'F',f:'BIR BAHADUR ROKAYA',m:'ASHADI ROKAYA',c:'9',sec:'T',addr:'Tanjakot-3, Humla',dob:'2068-03-22',age:14,guard:'BIR BAHADUR ROKAYA',guardph:'9844791062'},
+    {name:'Liza B K',g:'F',f:'Tejsing B K',m:'Laxmi B K',c:'6',sec:'',addr:'Satyawati-7, Gulmi',dob:'2070-03-25',age:12,guard:'Laxmi B K',guardph:'9862243984'},
+    {name:'Lunar Shreesh',g:'M',f:'Hom Mandap Shreesh',m:'Bhawani Shreesh',c:'12',sec:'T',addr:'Satyawati-4, Gulmi',dob:'2065-03-15',age:17,guard:'Hom Mandap Shreesh',guardph:'9847200676'},
+    {name:'Manika  Bhandari',g:'F',f:'Chabilal Bhandari',m:'Ganga Bhandari',c:'11',sec:'',addr:'Satyawati-6, Gulmi',dob:'2065-06-26',age:17,guard:'Ganga Bhandari',guardph:'9866139510'},
+    {name:'Manish Sunar',g:'M',f:'Dhan Bahadur Sunar',m:'Manisha Sunar',c:'4',sec:'',addr:'Paiyun-3, Parbat',dob:'2072-09-20',age:10,guard:'Manisha Sunar',guardph:'9767740261'},
+    {name:'Manoj Bhandari',g:'M',f:'Bhagwat Bhandari',m:'Gita Bhandari',c:'10',sec:'A',addr:'Satyawati-6, Gulmi',dob:'2067-06-19',age:15,guard:'Gita Bhandari',guardph:'9867718013'},
+    {name:'Manoj Kami',g:'M',f:'Krishna  Bahadur Kami',m:'Man kumari Kami',c:'10',sec:'G',addr:'Satyawati-6, Gulmi',dob:'2067-06-12',age:15,guard:'Man kumari Kami',guardph:'9869628899'},
+    {name:'Migin  Shreesh',g:'M',f:'Surya Bahadur Thapa',m:'Chemkali Kala',c:'ECD/PPC',sec:'',addr:'Satyawati-8, Gulmi',dob:'2078-01-22',age:4,guard:'Chemkali Kala',guardph:'9866620098'},
+    {name:'Milan  Shrestha',g:'M',f:'Gyan Prasad Shrestha',m:'Saraswati Shresth',c:'5',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-08-16',age:10,guard:'Saraswati Shresth',guardph:'9849914672'},
+    {name:'Miraj  Rahadi',g:'M',f:'Bal Bahadur Rahadi',m:'Rupa Devi Taramu (Rahadi)',c:'10',sec:'A',addr:'Satyawati-3, Gulmi',dob:'2067-09-20',age:15,guard:'Bal Bahadur Rahadi',guardph:'9857061609'},
+    {name:'Misan Pariyar',g:'M',f:'',m:'',c:'11',sec:'',addr:'Satyawati-6, Gulmi',dob:'2066-12-08',age:16,guard:'Sita Pariyar',guardph:'9812994149'},
+    {name:'Mishan Shrestha',g:'M',f:'Mahendra Kumar Shrestha',m:'Manju Shrestha',c:'10',sec:'A',addr:'Satyawati-6, Gulmi',dob:'2067-01-27',age:15,guard:'Mahendra Kumar Shrestha',guardph:'9857061968'},
+    {name:'Mousam Sunar',g:'M',f:'Laxman Sunar',m:'Maya Sunar',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2071-02-16',age:11,guard:'Maya Sunar',guardph:'9805212089'},
+    {name:'Niraj Shreshta',g:'M',f:'Nabin Kumar Shrestha',m:'Sabina Shrestha',c:'9',sec:'T',addr:'Satyawati-6, Gulmi',dob:'2067-10-10',age:15,guard:'Nabin Kumar Shrestha',guardph:'9857073951'},
+    {name:'Nirajan  Thapa',g:'M',f:'Min Thapa',m:'Krishna Thapa',c:'12',sec:'T',addr:'Satyawati-5, Gulmi',dob:'2064-08-04',age:18,guard:'Krishna Thapa',guardph:'9867869328'},
+    {name:'Nirjal Shrestha',g:'M',f:'Jiban Shrestha',m:'Manisha Shrestha',c:'5',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-11-06',age:10,guard:'Manisha Shrestha',guardph:''},
+    {name:'Nirmal  Damai',g:'M',f:'Padam Bahadur Damai',m:'Dhan kala Damai',c:'9',sec:'T',addr:'Satyawati-6, Gulmi',dob:'2068-11-24',age:14,guard:'Dhan KALA Damai',guardph:'9765500936'},
+    {name:'Nischal  Aryal',g:'M',f:'Laxman Aryal',m:'Niru Aryal',c:'3',sec:'',addr:'Chandrakot-8, Gulmi',dob:'2075-01-19',age:7,guard:'Niru Aryal',guardph:'9742836712'},
+    {name:'Nisha Sunar',g:'F',f:'Ajay Sunar',m:'Phulmaya Sunar',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2073-06-29',age:9,guard:'Ajay Sunar',guardph:'9821312497'},
+    {name:'Nita  Sunar',g:'F',f:'Som Bahadur Sunar',m:'Shanti Sunar',c:'10',sec:'G',addr:'Satyawati-6, Gulmi',dob:'2064-11-16',age:18,guard:'Shanti Sunar',guardph:'9826495226'},
+    {name:'Nitesh Sunar',g:'M',f:'Som Bahadur Sunar',m:'Shanti Sunar',c:'5',sec:'',addr:'Satyawati-6, Gulmi',dob:'2068-04-17',age:14,guard:'Shanti Sunar',guardph:'9826495226'},
+    {name:'Padma Bhujel',g:'F',f:'Indra Bahadur Bhujel',m:'Rupa Bhujel',c:'12',sec:'T',addr:'Satyawati-7, Gulmi',dob:'2064-02-09',age:18,guard:'Rupa Bhujel',guardph:'9847415272'},
+    {name:'Parbin Thapa',g:'M',f:'Pritha Bahadur Thapa',m:'',c:'11',sec:'',addr:'Satyawati-7, Gulmi',dob:'2067-01-09',age:15,guard:'Bishnu Thapa',guardph:'9840631184'},
+    {name:'Partik B.k.',g:'M',f:'Ram Bahadur B.k.',m:'Mithu B.k.',c:'9',sec:'G',addr:'Musikot-5, Gulmi',dob:'2068-04-01',age:14,guard:'Mithu B.k.',guardph:'9769295430'},
+    {name:'Pawan Rana',g:'M',f:'Amrit Bahadur Rana',m:'Dil Kumari Rana',c:'10',sec:'A',addr:'Satyawati-6, Gulmi',dob:'2066-06-21',age:16,guard:'Dil Kumari Rana',guardph:'9860554768'},
+    {name:'Prabin Bhandari',g:'M',f:'Homnath Bhandari',m:'Radhika Bhandari',c:'10',sec:'A',addr:'Satyawati-6, Gulmi',dob:'2068-12-04',age:14,guard:'Homnath Bhandari',guardph:'9865260222'},
+    {name:'Pradip  Dhakal',g:'M',f:'Chhabilal Dhakal',m:'Laxmi Dhakal',c:'9',sec:'T',addr:'Satyawati-6, Gulmi',dob:'2067-11-24',age:15,guard:'Chabilal Dhakal',guardph:'9867585068'},
+    {name:'Prakhyat Bhandari',g:'M',f:'Ram Prasad Bhandari',m:'Mamata Bhandari',c:'3',sec:'',addr:'Satyawati-6, Gulmi',dob:'2074-09-03',age:8,guard:'Mamata Bhandari',guardph:'9847261122'},
+    {name:'Prakirti  Bhattarai',g:'F',f:'Abhishek Bhattarai',m:'Aasha Bhattarai',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2076-11-26',age:6,guard:'Aasha Bhattarai',guardph:'9842912567'},
+    {name:'Pramisha Neupane',g:'F',f:'Minnath Neupane',m:'Parbati Neupane',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2073-02-22',age:9,guard:'Parbati Neupane',guardph:'9846383764'},
+    {name:'Prashant Pariyar',g:'M',f:'Binod Pariyar',m:'Jamuna Pariyar',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2069-09-16',age:13,guard:'Jamuna Pariyar',guardph:''},
+    {name:'PRASIDDHA DHAKAL',g:'M',f:'PRAKASH DHAKAL',m:'INDRA DHAKAL',c:'9',sec:'T',addr:'Satyawati-6, Gulmi',dob:'2069-03-29',age:13,guard:'PRAKASH DHAKAL',guardph:'9847249053'},
+    {name:'Pratap Pariyar',g:'M',f:'Hikmat Pariyar',m:'Phulmaya Pariyar',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-11-09',age:10,guard:'Phulmaya Pariyar',guardph:'9869305691'},
+    {name:'Pratik  Bhandari',g:'M',f:'Parishwor Bhandari',m:'Sangita Bhandari',c:'10',sec:'A',addr:'Satyawati-6, Gulmi',dob:'2067-07-14',age:15,guard:'Sangita Bhandari',guardph:'9868330682'},
+    {name:'Pratik Pandey',g:'M',f:'Pradeepraj Pandey',m:'Krishna Kumari Pandey',c:'10',sec:'A',addr:'Satyawati-6, Gulmi',dob:'2066-05-10',age:16,guard:'Pradeep Raj Pandey',guardph:''},
+    {name:'Pratiksha  Gaire',g:'F',f:'Suraj Gaire',m:'Rekha Gaire',c:'7',sec:'',addr:'Satyawati-6, Gulmi',dob:'2069-03-07',age:13,guard:'Rekha Gaire',guardph:''},
+    {name:'Prbat Thapa',g:'M',f:'Buddha Bhadur Thapa',m:'Chanda Thapa',c:'12',sec:'T',addr:'Kaligandaki-2, Syangja',dob:'2066-04-21',age:16,guard:'Chanda Thapa',guardph:'9869427170'},
+    {name:'Prince Rana',g:'M',f:'Milan Rana',m:'Indira Pulami Rana',c:'5',sec:'',addr:'Satyawati-2, Gulmi',dob:'2072-04-08',age:10,guard:'Indra Pulami Rana',guardph:'9847252346'},
+    {name:'Priyasha  Pariyar',g:'F',f:'Jiban Pariyar',m:'Pinki Pariyar',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2078-05-02',age:4,guard:'Pinki Pariyar',guardph:'9867839270'},
+    {name:'Rachana  BK',g:'F',f:'Kul Bahadur BK',m:'Juna BK',c:'11',sec:'',addr:'Satyawati-6, Gulmi',dob:'2065-12-19',age:17,guard:'Kul Bahadur BK',guardph:'9765879204'},
+    {name:'Radha Thapa',g:'F',f:'Hari Thapa',m:'Tara Thapa',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-07-03',age:12,guard:'Tara Thapa',guardph:'9742368019'},
+    {name:'Rahit BK',g:'M',f:'Ramesh Kami',m:'Mina BK',c:'9',sec:'G',addr:'Satyawati-6, Gulmi',dob:'2067-07-30',age:15,guard:'Mina BK',guardph:'9867872685'},
+    {name:'Raj Pariyar',g:'M',f:'Khusiman Pariyar',m:'Riya Pariyar',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-05-08',age:12,guard:'Riya Pariyar',guardph:''},
+    {name:'Rama Dhakal',g:'F',f:'Homnath Dhakal',m:'Bhagirathi Dhakal',c:'12',sec:'',addr:'Satyawati-6, Gulmi',dob:'2064-02-28',age:18,guard:'Bhagirathi Dhakal',guardph:'Bhagirathi Dhakal'},
+    {name:'Rashika  Gaire',g:'F',f:'Shalikram Gaire',m:'Kushum Gaire',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2074-10-22',age:8,guard:'Kushum Gaire',guardph:'9842924876'},
+    {name:'Rasik Binayak Aryal',g:'M',f:'Ram Chandra Aryal',m:'Radhika Aryal',c:'11',sec:'T',addr:'Musikot-5, Gulmi',dob:'2067-01-02',age:15,guard:'Radhika Aryal',guardph:'9844758909'},
+    {name:'Rijan Acharya',g:'M',f:'Himal Acharya',m:'Sirjana Acharya',c:'10',sec:'A',addr:'Satyawati-6, Gulmi',dob:'2066-03-15',age:16,guard:'Himal Acharya',guardph:''},
+    {name:'Rijan Neupane',g:'M',f:'Tank Nath Neupane',m:'Manrupa Neupane',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-10-13',age:10,guard:'Manrupa Neupane',guardph:'9868202800'},
+    {name:'Rijan Pariyar',g:'M',f:'Ramu Pariyar',m:'Rajina Pariyar',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-09-04',age:12,guard:'Rajina Pariyar',guardph:''},
+    {name:'Risab Bhandari',g:'M',f:'Raju Bhandari',m:'Sumitra Bhandari',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2079-05-07',age:3,guard:'Raju Bhandari',guardph:'9845286314'},
+    {name:'Ritika Bhandari',g:'F',f:'Rishiram Bhandari',m:'Dolmaya Bhandari',c:'10',sec:'A',addr:'Satyawati-5, Gulmi',dob:'2066-11-22',age:16,guard:'Rishi Ram Bhandari',guardph:''},
+    {name:'Riyan  Pariyar',g:'M',f:'Khusiman Pariyar',m:'Rima Pariyar',c:'2',sec:'',addr:'Satyawati-6, Gulmi',dob:'2073-10-23',age:9,guard:'Rima Pariyar',guardph:'9765249431'},
+    {name:'Rohan BK',g:'M',f:'Ramesh Kami',m:'Mina BK',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-04-01',age:12,guard:'Mina BK',guardph:'9812957046'},
+    {name:'Roshan Sunar',g:'M',f:'Buddha  Sunar',m:'Kopila Sunar',c:'9',sec:'G',addr:'Satyawati-6, Gulmi',dob:'2066-03-16',age:16,guard:'Kopila Sunar',guardph:'9821312494'},
+    {name:'Roshani  Sunar',g:'F',f:'Buddha Bahadur Sunar',m:'Kopila Sunar',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2071-10-16',age:11,guard:'Kopila Sunar',guardph:''},
+    {name:'Rupa Nepali',g:'F',f:'Kumar Nepali',m:'',c:'11',sec:'',addr:'Satyawati-7, Gulmi',dob:'2067-03-08',age:15,guard:'Dhanmaya Nepali',guardph:'9748826782'},
+    {name:'Rushma Damai',g:'F',f:'Ramu  Damai',m:'Shanti Damai',c:'9',sec:'G',addr:'Satyawati-7, Gulmi',dob:'2068-01-03',age:14,guard:'Shanti Damai',guardph:'9849448242'},
+    {name:'Sabisan Dhakal',g:'M',f:'Birendra Dhakal',m:'Chet Kumari Dhakal',c:'7',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-08-19',age:12,guard:'Birendra Dhakal',guardph:'9857042954'},
+    {name:'Sabisha Dhakal',g:'F',f:'Birendra Dhakal',m:'Chetkumari Dhakal',c:'2',sec:'',addr:'Satyawati-6, Gulmi',dob:'2075-10-05',age:7,guard:'Birendra Dhakal',guardph:'9857042954'},
+    {name:'Sabita BK',g:'F',f:'Prem Bahadur Kami',m:'Laxmi Kami',c:'9',sec:'G',addr:'Chhatrakot-1, Gulmi',dob:'2066-10-13',age:16,guard:'Laxmi kami',guardph:'9849445253'},
+    {name:'Sachin Pun',g:'M',f:'Amar Bahadur Pun',m:'Bina Pun',c:'12',sec:'',addr:'Satyawati-7, Gulmi',dob:'2064-05-27',age:18,guard:'Bina Pun',guardph:'Bina Pun'},
+    {name:'Safal Sunar',g:'M',f:'',m:'',c:'11',sec:'',addr:'Satyawati-6, Gulmi',dob:'2065-05-06',age:16,guard:'Juna Sunar',guardph:'9865295622'},
+    {name:'Sagar Gaire Sharki',g:'M',f:'Suraj Sharki',m:'Sunita Sharki',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2071-02-12',age:11,guard:'Sunita Sharki',guardph:''},
+    {name:'Sajan  Sunar',g:'M',f:'Resham Sunar',m:'Kamala Sunar',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2069-07-28',age:13,guard:'Kamala Sunar',guardph:''},
+    {name:'Sajan Gautam',g:'M',f:'BishnuPrasad Gautam',m:'Chandrakala Gautam',c:'10',sec:'A',addr:'Satyawati-6, Gulmi',dob:'2066-03-16',age:16,guard:'Bishnu Parsad Gautam',guardph:'9847208110'},
+    {name:'Sakshyam  Pariyar',g:'M',f:'Bishnu Pariyar',m:'Ankita Pariyar',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2073-08-27',age:9,guard:'Ankita Pariyar',guardph:'9762255325'},
+    {name:'Samarpan Gaire',g:'M',f:'Surya Gaire',m:'Laxmi Gaire',c:'1',sec:'',addr:'Satyawati-6, Gulmi',dob:'2076-03-16',age:6,guard:'Laxmi Gaire',guardph:'9749731357'},
+    {name:'Samikasha Nepali',g:'F',f:'Gopal Nepali',m:'Sita Nepali',c:'11',sec:'',addr:'Satyawati-7, Gulmi',dob:'2065-09-10',age:17,guard:'Sita Nepali',guardph:'9869946139'},
+    {name:'Samikshya  Gurung',g:'F',f:'Shyam Gurung',m:'Laxmi Gurung',c:'11',sec:'',addr:'Satyawati-6, Gulmi',dob:'2068-06-04',age:14,guard:'Laxmi Gurung',guardph:'9847223012'},
+    {name:'Samikshya Bhandari',g:'F',f:'Hari Prasad Bhandari',m:'Sita Bhandari',c:'11',sec:'T',addr:'Satyawati-6, Gulmi',dob:'2065-01-19',age:17,guard:'Sita Bhandari',guardph:'9847172882'},
+    {name:'Samikshya Gaire Sarki',g:'F',f:'Surya Gaire',m:'Laxmi Gaire',c:'5',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-04-05',age:10,guard:'Laxmi Gaire',guardph:'9849831357'},
+    {name:'Samir Bk',g:'M',f:'Bishnu Bk',m:'Bimala Bk',c:'6',sec:'',addr:'Satyawati-7, Gulmi',dob:'2070-04-06',age:12,guard:'Bimala Bk',guardph:'9849445277'},
+    {name:'Samir BK',g:'M',f:'Sanju BK',m:'Kopila BK',c:'3',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-10-23',age:10,guard:'Kopila BK',guardph:'9812918063'},
+    {name:'Samixa Bishwakarma',g:'F',f:'Bishnu Bishwakarma',m:'Bimala Bishwakarma',c:'5',sec:'',addr:'Satyawati-6, Gulmi',dob:'2071-07-06',age:11,guard:'Bimala Bishwakarma',guardph:'9849445277'},
+    {name:'Samjhana Dhakal',g:'F',f:'Pradip Dhakal',m:'Manju Dhakal',c:'11',sec:'',addr:'Satyawati-6, Gulmi',dob:'2065-12-15',age:17,guard:'Manju Dhakal',guardph:'9867648336'},
+    {name:'Samrat  Gaire',g:'M',f:'Ran Bahadur Gaire',m:'Mira Gaire',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-10-19',age:12,guard:'Mira Gaire',guardph:'9863499890'},
+    {name:'Samrat Gautam',g:'M',f:'Bishnu Prasad Gautam',m:'Parbati Gautam',c:'9',sec:'T',addr:'Satyawati-5, Gulmi',dob:'2067-09-29',age:15,guard:'Parbati Gautam',guardph:'9846874121'},
+    {name:'Sanchita Gaire',g:'F',f:'Ran Bahadur Gaire',m:'Mira Gaire',c:'11',sec:'',addr:'Satyawati-6, Gulmi',dob:'2063-11-16',age:19,guard:'Mira Gaire',guardph:'9863399890'},
+    {name:'Sandhya  Dhakal',g:'F',f:'',m:'Manju Dhakal',c:'3',sec:'',addr:'Satyawati-6, Gulmi',dob:'2075-01-17',age:7,guard:'Manju Dhakal',guardph:'9846790064'},
+    {name:'sandhya Gaire',g:'F',f:'Bishnu Bahadur Sarki',m:'Mamata Sarki',c:'9',sec:'T',addr:'Satyawati-6, Gulmi',dob:'2068-04-24',age:14,guard:'Mamata Sarki',guardph:'9867869311'},
+    {name:'Sandip B K',g:'M',f:'Man Bahadur B K',m:'Maya B K',c:'12',sec:'',addr:'Satyawati-7, Gulmi',dob:'2066-07-11',age:16,guard:'Maya B K',guardph:'Maya B K'},
+    {name:'Sandip Bhusal',g:'M',f:'Krishna Prasad Bhusal',m:'Saraswati Bhusal',c:'7',sec:'',addr:'Satyawati-6, Gulmi',dob:'2068-08-02',age:14,guard:'Krishna Prasad Bhusal',guardph:''},
+    {name:'Sangam  Gurung',g:'M',f:'Resham Bahadur  Gurung',m:'Subitra Gurung',c:'8',sec:'',addr:'Satyawati-6, Gulmi',dob:'2069-04-20',age:13,guard:'Subitra Gurung',guardph:'9867431652'},
+    {name:'Sangita  Sunar',g:'F',f:'Netra Sunar',m:'Sita Sunar',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2073-02-22',age:9,guard:'Sita Sunar',guardph:'9762741306'},
+    {name:'Sanjit Bhandari',g:'M',f:'Hari Prasad Bhandari',m:'Sarita Bhandari',c:'10',sec:'G',addr:'Satyawati-6, Gulmi',dob:'2065-09-21',age:17,guard:'',guardph:''},
+    {name:'Santosh Nepali',g:'M',f:'Thage Nepali',m:'Devkala Nepali',c:'12',sec:'',addr:'Satyawati-7, Gulmi',dob:'2066-07-18',age:16,guard:'Devkala Nepali',guardph:'Devkala Nepali'},
+    {name:'Sapana  Bhusal',g:'F',f:'Krishna Prasad Bhusal',m:'Saraswati Bhusal',c:'7',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-06-22',age:12,guard:'Krishna Prasad Bhusal',guardph:''},
+    {name:'Sapana Sunar',g:'F',f:'Laxman Sunar',m:'Sushila Sunar',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2071-04-05',age:11,guard:'Sushila Sunar',guardph:'9861110069'},
+    {name:'Saraswati BK',g:'F',f:'Hira Bahadur BK',m:'Radhika BK',c:'11',sec:'',addr:'Satyawati-6, Gulmi',dob:'2064-06-07',age:18,guard:'Radhika BK',guardph:'9765396450'},
+    {name:'Saswatika Rana',g:'F',f:'Ishowi Rana',m:'Dhankala Rana',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2078-11-02',age:4,guard:'Dhankala Rana',guardph:'9869923546'},
+    {name:'Saugat BK (A)',g:'M',f:'Shovakhar BK',m:'Asha BK',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-12-13',age:10,guard:'Asha BK',guardph:'9867872595'},
+    {name:'Saugat Bk (B)',g:'M',f:'Sankar Bk',m:'Ganga Bk',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2073-03-24',age:9,guard:'Ganga Bk',guardph:'9812997992'},
+    {name:'Senisha Kala',g:'F',f:'Dhan Bahadur Kala',m:'Dipa Kala',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2074-04-14',age:8,guard:'Dhan Bahadur Kala',guardph:'9847004360'},
+    {name:'Shahil  BK',g:'M',f:'Sanjay BK',m:'Kopila BK',c:'2',sec:'',addr:'Satyawati-6, Gulmi',dob:'2073-12-23',age:9,guard:'Kopila BK',guardph:'9812918063'},
+    {name:'Shalina Sunar',g:'F',f:'Dhan Bahadur Sunar',m:'Sita B.K Sunar',c:'8',sec:'',addr:'Paiyun-3, Parbat',dob:'2067-01-29',age:15,guard:'Sita B.K  Sunar',guardph:'9742366045'},
+    {name:'Shirisha Pariyar',g:'F',f:'Tika Pariyar',m:'Sapana  Pariyar',c:'6',sec:'',addr:'Satyawati-7, Gulmi',dob:'2071-11-12',age:11,guard:'Sapana  Pariyar',guardph:'9749896574'},
+    {name:'Shishir Bhandari',g:'M',f:'Ramnath Bhandari',m:'Puja Bhandari',c:'10',sec:'A',addr:'Satyawati-6, Gulmi',dob:'2066-05-10',age:16,guard:'Puja Bhandari',guardph:'9847499247'},
+    {name:'Shishir Gaire',g:'M',f:'Ran Bahadur Gaire',m:'Mira Gire',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2073-03-12',age:9,guard:'Mira Gire',guardph:'9863899890'},
+    {name:'Shisir BK',g:'M',f:'Subash Bk',m:'Aasha Bk',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2069-08-02',age:13,guard:'Aasha Bk',guardph:''},
+    {name:'Shobha Nepali',g:'F',f:'Dhanabir Nepali',m:'Gita Nepali',c:'9',sec:'T',addr:'Galkot-11, Baglung',dob:'2066-09-22',age:16,guard:'Gita Nepali',guardph:'9766649431'},
+    {name:'Shrishti Pariyar',g:'F',f:'Bishnu Pariyar',m:'Manju Pariyar',c:'11',sec:'',addr:'Satyawati-6, Gulmi',dob:'2065-05-15',age:17,guard:'Manju Pariyar',guardph:'9842363176'},
+    {name:'Shusil BK',g:'M',f:'Puran BK',m:'Sushila Sunar',c:'11',sec:'',addr:'Satyawati-7, Gulmi',dob:'2065-08-19',age:17,guard:'Sushila Sunar',guardph:'9805212089'},
+    {name:'Sidartha Nepali',g:'M',f:'Santa Bdr Pariyar',m:'Gaumaya  nepali',c:'4',sec:'',addr:'Satyawati-7, Gulmi',dob:'2072-05-13',age:10,guard:'Sima Nepali',guardph:'9768425136'},
+    {name:'Sijan  Bashyal',g:'M',f:'Madan Bahadur Sarki',m:'Samriddhi Gaire',c:'2',sec:'',addr:'Satyawati-6, Gulmi',dob:'2075-04-29',age:7,guard:'Samriddhi Gaire',guardph:'9857025264'},
+    {name:'Sijan  Sunar',g:'M',f:'Suman Sunar',m:'Kalpana Sunar',c:'9',sec:'G',addr:'Satyawati-6, Gulmi',dob:'2067-11-28',age:15,guard:'Kalpana Sunar',guardph:'9745418353'},
+    {name:'Sijan BK',g:'M',f:'Karna Bahadur Kami',m:'Tipmaya BK',c:'5',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-11-28',age:10,guard:'Tipmaya BK',guardph:'9866139583'},
+    {name:'Sijan Nepali',g:'M',f:'Krishan  Bhahadur Nepali',m:'Dev Maya Nepali',c:'10',sec:'A',addr:'Satyawati-4, Gulmi',dob:'2066-07-25',age:16,guard:'Devmaya Nepali',guardph:'9846393688'},
+    {name:'Sirjan  Rana',g:'M',f:'Ishowari Rana',m:'Dhankala Rana',c:'3',sec:'',addr:'Satyawati-6, Gulmi',dob:'2074-02-21',age:8,guard:'Dhankala Rana',guardph:'9742363910'},
+    {name:'Sirjana BK',g:'F',f:'Kamal Bahadur B.K',m:'MIna B.K',c:'8',sec:'',addr:'Satyawati-6, Gulmi',dob:'2069-05-31',age:13,guard:'Mina Sunar',guardph:'9807487002'},
+    {name:'Som Bahadur Bk',g:'M',f:'Karan Bk',m:'Tipmaya Bk',c:'7',sec:'',addr:'Satyawati-6, Gulmi',dob:'2069-02-29',age:13,guard:'Tipmaya Bk',guardph:''},
+    {name:'Soniya  Dhakal',g:'F',f:'Pradip Dhakal',m:'Man Kumari Dhakal',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2078-12-01',age:4,guard:'Man Kumari Dhakal',guardph:'9846790064'},
+    {name:'Soniya  Sunar',g:'F',f:'Tikaram Sunar',m:'Juna Sunar',c:'7',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-01-20',age:12,guard:'Juna Sunar',guardph:'9815425925'},
+    {name:'Soniya Bk',g:'F',f:'Rajin Bk',m:'Laxmi Bk',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2077-02-31',age:5,guard:'Laxmi Bk',guardph:'9745418357'},
+    {name:'Soniya BK',g:'F',f:'Prem Bahadur Kami',m:'Laxmi Kami',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-10-29',age:12,guard:'Laxmi Kami',guardph:'9849445253'},
+    {name:'Sophiya Pariyar',g:'F',f:'Durga Bahadur Pariyar',m:'Pabitra Pariyar',c:'10',sec:'G',addr:'Chandrakot-5, Gulmi',dob:'2067-05-24',age:15,guard:'Pabitra Pariyar',guardph:'9867542480'},
+    {name:'Sophiya Sunar',g:'F',f:'Dhan Bahadur Sunar',m:'Sita Sunar',c:'3',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-05-05',age:10,guard:'Sita Sunar',guardph:'9742366045'},
+    {name:'Srijana  B.K',g:'F',f:'Ramu BK',m:'Biva BK',c:'4',sec:'G',addr:'Satyawati-6, Gulmi',dob:'2073-04-18',age:9,guard:'Biva BK',guardph:'9867117517'},
+    {name:'Subham Chhetri',g:'M',f:'Nil Kantha Chhetri',m:'Juma Kumari Chhetri',c:'4',sec:'',addr:'-null,',dob:'2071-5-9',age:11,guard:'',guardph:''},
+    {name:'Sudarshan Dhakal',g:'M',f:'Postraj Dhakal',m:'kamala Dhakal',c:'9',sec:'T',addr:'Satyawati-5, Gulmi',dob:'2066-03-28',age:16,guard:'kamala Dhakal',guardph:'9844568551'},
+    {name:'Sugam BK',g:'M',f:'Narayan Bahadur BK',m:'Sudha BK',c:'1',sec:'',addr:'Chhatrakot-1, Gulmi',dob:'2075-05-14',age:7,guard:'Sudha BK',guardph:'9767643724'},
+    {name:'Suhani Pariyar',g:'F',f:'Bishnu Pariyar',m:'Manju Pariyar',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2071-10-16',age:11,guard:'Manju Pariyar',guardph:'9842363176'},
+    {name:'Sulav  Dhakal',g:'M',f:'Kamal Dhakal',m:'Laxmi Dhakal',c:'7',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-06-07',age:12,guard:'Laxmi Dhakal',guardph:'9864441716'},
+    {name:'Sumina Bk',g:'F',f:'Dhurba BK',m:'Kalpana BK',c:'7',sec:'',addr:'Satyawati-6, Gulmi',dob:'2070-06-22',age:12,guard:'Kalpana BK',guardph:''},
+    {name:'Sumina nepali',g:'F',f:'',m:'Bina Nepali',c:'11',sec:'',addr:'Satyawati-7, Gulmi',dob:'2066-02-15',age:16,guard:'Bina Nepali',guardph:'9867858352'},
+    {name:'Sumit  Gaire',g:'M',f:'Churamani Gaire',m:'Bipana Gaire',c:'1',sec:'',addr:'Satyawati-6, Gulmi',dob:'2075-12-10',age:7,guard:'Bipana Gaire',guardph:'9768742132'},
+    {name:'Supriya Bk',g:'F',f:'Dhurba Bk',m:'Kalpana Bk',c:'10',sec:'G',addr:'Satyawati-7, Gulmi',dob:'2066-10-08',age:16,guard:'Kalpana Bk',guardph:'9867355485'},
+    {name:'Supriya Shrestha',g:'F',f:'Sanjay Shrestha',m:'Sharadha Shrestha',c:'1',sec:'',addr:'Satyawati-6, Gulmi',dob:'2076-06-03',age:6,guard:'Sharadha Shrestha',guardph:'9742908920'},
+    {name:'Suraj Sunar',g:'M',f:'Yam Bahadur Sunar',m:'Mina Sunar',c:'11',sec:'',addr:'-null,',dob:'2065-10-16',age:17,guard:'',guardph:''},
+    {name:'Surakshya  Pariyar',g:'F',f:'Bishnu Pariyar',m:'Manju Pariyar',c:'9',sec:'G',addr:'Satyawati-6, Gulmi',dob:'2067-05-20',age:15,guard:'Manju Pariyar',guardph:''},
+    {name:'Surakshya Bk',g:'F',f:'Shankar Kami',m:'Ganga Kami',c:'8',sec:'',addr:'Satyawati-6, Gulmi',dob:'2069-04-15',age:13,guard:'Ganga Bk',guardph:'9812997992'},
+    {name:'Surya  Nepali',g:'M',f:'Arjun Nepali',m:'Santi Sarki',c:'1',sec:'',addr:'Arjunchaupari-6, Syangja',dob:'2075-08-28',age:7,guard:'Santi Sarki',guardph:'9820708406'},
+    {name:'Susal  Bhandari',g:'M',f:'Hari Prasad Bhandari',m:'Sita Bhandari',c:'9',sec:'T',addr:'Satyawati-6, Gulmi',dob:'2066-05-22',age:16,guard:'Hari Prasad Bhandari',guardph:'9867160565'},
+    {name:'Susan Bk',g:'M',f:'Chandra Bk',m:'Hira Bk',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-09-21',age:10,guard:'Hira BK',guardph:''},
+    {name:'Sushant  Pariyar',g:'M',f:'Bimal Pariyar',m:'Sushmita Pariyar',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2077-10-22',age:5,guard:'Sushmita Pariyar',guardph:'9867165389'},
+    {name:'Sushant Bhandari',g:'M',f:'Raju Bhandari',m:'Sumitra kharal Bhandari',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2071-08-06',age:11,guard:'Sumitra kharal Bhandari',guardph:'9845286314'},
+    {name:'Susma Bk',g:'F',f:'Dhan Bahadur Bk',m:'Kamala Bk',c:'5',sec:'',addr:'Satyawati-6, Gulmi',dob:'2071-05-06',age:11,guard:'Kamala Bk',guardph:'9849448405'},
+    {name:'Swikriti  Dhakal',g:'F',f:'Kamal Dhakal',m:'Laxmi Dhakal',c:'6',sec:'',addr:'Satyawati-6, Gulmi',dob:'2071-06-18',age:11,guard:'Laxmi Dhakal',guardph:'9742345928'},
+    {name:'Tapur Pariyar',g:'M',f:'Tika Pariyar',m:'Kalpana Pariyar',c:'2',sec:'',addr:'Satyawati-6, Gulmi',dob:'2075-11-14',age:7,guard:'Kalpana Pariyar',guardph:'9749896574'},
+    {name:'Tika BK',g:'M',f:'Sher Bahadur BK',m:'Maya BK',c:'11',sec:'T',addr:'Satyawati-6, Gulmi',dob:'2065-02-01',age:17,guard:'Maya BK',guardph:'9865259622'},
+    {name:'Tirsana Neupane',g:'F',f:'Madhu Neupane',m:'Sapana Acharya',c:'9',sec:'T',addr:'Satyawati-6, Gulmi',dob:'2068-08-08',age:14,guard:'Sapana Acharya',guardph:'9847423976'},
+    {name:'Unik  Pariyar',g:'M',f:'Santosh Pariyar',m:'Geeta Pariyar',c:'ECD/PPC',sec:'',addr:'Satyawati-6, Gulmi',dob:'2079-08-15',age:3,guard:'Geeta Pariyar',guardph:'9849908239'},
+    {name:'Yubraj  Shrestha',g:'M',f:'Binod Shrestha',m:'Narayani Shrestha',c:'5',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-11-19',age:10,guard:'Narayani Shrestha',guardph:'9867858366'},
+    {name:'Yubraj BK',g:'M',f:'Prem Bahadur BK',m:'Kopila BK',c:'4',sec:'',addr:'Satyawati-6, Gulmi',dob:'2072-01-07',age:10,guard:'Kopila BK',guardph:'9811500024'},
+    {name:'Yunik Sunar',g:'M',f:'Dev Bahadur Sunar',m:'Indira BK',c:'5',sec:'',addr:'Satyawati-6, Gulmi',dob:'2073-03-15',age:9,guard:'Indira Sunar',guardph:'9806104161'},
+    {name:'Yunisha  Pariyar',g:'F',f:'Santosh Pariyar',m:'Gita Pariyar',c:'3',sec:'',addr:'Satyawati-6, Gulmi',dob:'2073-05-17',age:9,guard:'Gita Pariyar',guardph:'9806104203'},
+    {name:'Yuvan  Choudhari',g:'M',f:'Resham choudhari',m:'Salina Budhathoki',c:'9',sec:'T',addr:'Sainamaina-4, Rupandehi',dob:'2068-06-08',age:14,guard:'Salina Budhathoki',guardph:'9844705191'}
+  ],
+  stats:{t:245,m:133,f:112,st:31},
+  settings:{name:'Shree Saraswati Secondary School',ht:'Chhabilal Bhandari',phone:'9857062876',email:'info@school.edu',address:'Gulmi',iemis:'460500011'}
+};
+
+var data = JSON.parse(localStorage.getItem('schoolData')) || defaultData;
+
+// Ensure studentDetails exists
+if(!data.studentDetails || !Array.isArray(data.studentDetails)){
+  data.studentDetails = defaultData.studentDetails || [];
+}
+
+// Ensure staff exists
+if(!data.staff || !Array.isArray(data.staff)){
+  data.staff = defaultData.staff || [];
+}
+
+// Load inquiries from web form submissions BEFORE any save
+var webInquiries = JSON.parse(localStorage.getItem('admissionInquiries')) || [];
+console.log('Web inquiries loaded:', webInquiries);
+data.inquiries = webInquiries.concat(data.inquiries);
+console.log('All inquiries after merge:', data.inquiries);
+// Clear admissionInquiries so deleted items don't reappear on refresh
+localStorage.removeItem('admissionInquiries');
+
+// ALWAYS save merged data to persist inquiries
+localStorage.setItem('schoolData',JSON.stringify(data));
+console.log('Data saved with inquiries');
+
+// Ensure events array exists
+if(!data.events){
+  data.events = [
+    {c:'academic',t:'Annual Exam',d:'Chaitra 2082',d2:'Exam hall',img:''},
+    {c:'sports',t:'Sports Day',d:'Baisakh 2083',d2:'School ground',img:''},
+    {c:'cultural',t:'Culture Program',d:'Ashoj 2082',d2:'Assembly hall',img:''}
+  ];
+}
+
+var currentFilter = 'all';
+var currentEditType = '';
+var currentStudentTab = 'active';
+var currentEditIndex = -1;
+
+// Hero Slideshow functions
+function renderHero(){
+  document.getElementById('hero-list').innerHTML = data.hero ? data.hero.map(function(h,i){
+    return '<div class="item-card"><img src="'+h+'" style="width:100%;height:150px;object-fit:cover;border-radius:8px;"><div class="item-actions"><button class="btn-delete" onclick="deleteHero('+i+')">Delete</button></div></div>';
+  }).join('') : '<p class="empty-state">No images added yet</p>';
+}
+
+function addHeroImage(){
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = function(e){
+    if(e.target.files && e.target.files[0]){
+      compressImage(e.target.files[0], function(imgData){
+        if(!data.hero) data.hero = [];
+        data.hero.push(imgData);
+        saveData();
+        renderHero();
+        showToast('Image added!');
+      }, 1200);
+    }
+  };
+  input.click();
+}
+
+function deleteHero(idx){
+  if(confirm('Delete this hero image?')){
+    data.hero.splice(idx,1);
+    saveData();
+    renderHero();
+    showToast('Deleted!');
+  }
+}
+
+function showPanel(id){
+  document.querySelectorAll('.AdminPanel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.admin-sidebar button').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('panel-'+id).classList.add('active');
+  document.querySelector('.admin-sidebar button[onclick="showPanel(\''+id+'\')"]').classList.add('active');
+  if(id==='dashboard')renderDashboard();
+  if(id==='teachers')renderTeachers();
+  if(id==='staff')renderStaff();
+  if(id==='notices')renderNotices();
+  if(id==='students')renderStudents();
+  if(id==='student-details')renderStudentDetails();
+  if(id==='gallery')renderGallery();
+  if(id==='hero')renderHero();
+  if(id==='events')renderEvents();
+  if(id==='admission')renderInquiries();
+}
+
+function renderDashboard(){
+  var activeCount = data.studentDetails.filter(function(s){ return s.status !== 'dropout' && s.status !== 'passout'; }).length;
+  var dropoutCount = data.studentDetails.filter(function(s){ return s.status === 'dropout'; }).length;
+  var passoutCount = data.studentDetails.filter(function(s){ return s.status === 'passout'; }).length;
+  document.getElementById('stats-summary').innerHTML = 
+    '<div class="summary-card"><div class="num">'+data.teachers.length+'</div><div class="label">Teachers</div></div>'+
+    '<div class="summary-card"><div class="num">'+activeCount+'</div><div class="label">Active Students</div></div>'+
+    '<div class="summary-card"><div class="num" style="color:#dc3545;">'+dropoutCount+'</div><div class="label">Dropouts</div></div>'+
+    '<div class="summary-card"><div class="num" style="color:#6c757d;">'+passoutCount+'</div><div class="label">Passouts</div></div>'+
+    '<div class="summary-card"><div class="num">'+data.notices.length+'</div><div class="label">Notices</div></div>'+
+    '<div class="summary-card"><div class="num">'+data.inquiries.length+'</div><div class="label">Inquiries</div></div>';
+  var recent = data.inquiries.slice(-3).reverse();
+  document.getElementById('recent-activity').innerHTML = recent.length?recent.map(function(i){return'<div class="inquiry-card"><div class="inquiry-header"><div class="item-title">'+i.n+' - '+i.c+'</div><span class="badge badge-new">'+i.s+'</span></div><div class="item-meta">'+i.p+' | '+i.d+'</div></div>';}).join(''):'<p class="empty-state">No activity</p>';
+}
+
+function filterTeachers(f,btn){
+  currentFilter = f;
+  renderTeachers();
+  document.querySelectorAll('.tab-nav button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+}
+
+function initials(n){
+  return n.trim().split(' ').slice(0,2).map(function(w){return w[0];}).join('');
+}
+
+function renderTeachers(){
+  var list = data.teachers;
+  if(currentFilter !== 'all'){
+    list = data.teachers.filter(function(t){
+      if(currentFilter === 'ECD')return t.l.indexOf('ECD') !== -1;
+      if(currentFilter === 'Primary')return t.l.indexOf('Primary') !== -1 || t.l.indexOf('Lower') !== -1;
+      if(currentFilter === 'Secondary')return t.l.indexOf('Secondary') !== -1;
+      return true;
+    });
+  }
+  document.getElementById('teachers-list').innerHTML = list.length ? list.map(function(t,i){
+    var idx = data.teachers.indexOf(t);
+    var photo = t.p ? '<div class="photo-preview"><img src="'+t.p+'"></div>' : '<div class="photo-preview '+(t.g==='F'?'female':'male')+'">'+initials(t.name)+'</div>';
+    return '<div class="item-card">'+photo+'<div class="item-title">'+t.name+'</div><div class="item-meta">'+t.l+' | '+t.q+(t.s?' | '+t.s:'')+'</div><div class="item-actions"><button class="btn-edit" onclick="editTeacher('+idx+')">Edit</button><button class="btn-delete" onclick="deleteTeacher('+idx+')">Delete</button></div></div>';
+  }).join('') : '<p class="empty-state">No teachers</p>';
+}
+
+function renderStaff(){
+  document.getElementById('staff-list').innerHTML = data.staff.length ? data.staff.map(function(s,i){
+    var photo = s.p ? '<img src="'+s.p+'" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">' : '<div style="width:40px;height:40px;border-radius:50%;background:#ddd;display:flex;align-items:center;justify-content:center;color:#999;font-size:1.2rem;">'+(s.name.charAt(0)).toUpperCase()+'</div>';
+    return '<tr style="border-bottom:1px solid #eee;"><td style="padding:0.6rem;">'+(i+1)+'</td><td style="padding:0.6rem;">'+photo+'</td><td style="padding:0.6rem;">'+s.name+'</td><td style="padding:0.6rem;">'+(s.phone||'-')+'</td><td style="padding:0.6rem;">'+(s.dob||'-')+'</td><td style="padding:0.6rem;"><button class="btn-edit" style="font-size:0.7rem;padding:0.2rem 0.5rem;" onclick="editStaff('+i+')">Edit</button> <button class="btn-delete" style="font-size:0.7rem;padding:0.2rem 0.5rem;" onclick="deleteStaff('+i+')">Delete</button></td></tr>';
+  }).join('') : '<tr><td colspan="5" style="padding:1rem;text-align:center;color:var(--muted);">No staff members</td></tr>';
+}
+
+var staffPhotoData = '';
+
+function openAddStaff(){
+  staffPhotoData = '';
+  document.getElementById('modal-title').innerText = 'Add New Staff';
+  document.getElementById('modal-body').innerHTML = '<div class="form-row"><div class="form-group"><label>Photo</label><input type="file" id="st-photo" accept="image/*" onchange="previewStaffPhoto(this)"></div><div class="form-group"><div id="st-photo-preview" style="width:80px;height:80px;border-radius:50%;background:#eee;display:flex;align-items:center;justify-content:center;overflow:hidden;"></div></div></div><div class="form-row"><div class="form-group"><label>Full Name *</label><input type="text" id="st-name"></div></div><div class="form-row"><div class="form-group"><label>Phone</label><input type="text" id="st-phone"></div><div class="form-group"><label>Date of Birth (BS)</label><input type="text" id="st-dob" placeholder="e.g. 2050-06-08"></div></div>';
+  currentEditType = 'staff';
+  currentEditIndex = -1;
+  document.getElementById('modal').style.display = 'block';
+}
+
+function previewStaffPhoto(input){
+  if(input.files && input.files[0]){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      staffPhotoData = e.target.result;
+      document.getElementById('st-photo-preview').innerHTML = '<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;">';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function editStaff(idx){
+  var s = data.staff[idx];
+  staffPhotoData = s.p || '';
+  var photoPreview = s.p ? '<img src="'+s.p+'" style="width:100%;height:100%;object-fit:cover;">' : '<span style="color:#999;">No Photo</span>';
+  document.getElementById('modal-title').innerText = 'Edit Staff';
+  document.getElementById('modal-body').innerHTML = '<div class="form-row"><div class="form-group"><label>Photo</label><input type="file" id="st-photo" accept="image/*" onchange="previewStaffPhoto(this)"></div><div class="form-group"><div id="st-photo-preview" style="width:80px;height:80px;border-radius:50%;background:#eee;display:flex;align-items:center;justify-content:center;overflow:hidden;">'+photoPreview+'</div></div></div><div class="form-row"><div class="form-group"><label>Full Name *</label><input type="text" id="st-name" value="'+s.name+'"></div></div><div class="form-row"><div class="form-group"><label>Phone</label><input type="text" id="st-phone" value="'+(s.phone||'')+'"></div><div class="form-group"><label>Date of Birth (BS)</label><input type="text" id="st-dob" value="'+(s.dob||'')+'"></div></div>';
+  currentEditType = 'staff';
+  currentEditIndex = idx;
+  document.getElementById('modal').style.display = 'block';
+}
+
+function deleteStaff(idx){
+  if(confirm('Delete this staff member?')){
+    data.staff.splice(idx,1);
+    saveData();
+    renderStaff();
+    showToast('Staff deleted');
+  }
+}
+
+function renderNotices(){
+  var colors = {exam:'var(--gold)',admission:'var(--light-green)',event:'#8FA3FF'};
+  document.getElementById('notices-list').innerHTML = data.notices.length ? data.notices.map(function(n,i){
+    return '<div class="item-card"><div class="item-title">'+n.t+'</div><div class="item-meta"><span class="badge" style="background:'+colors[n.c]+'">'+n.c+'</span> | '+n.d+'</div><div class="item-actions"><button class="btn-edit" onclick="editNotice('+i+')">Edit</button><button class="btn-delete" onclick="deleteNotice('+i+')">Delete</button></div></div>';
+  }).join('') : '<p class="empty-state">No notices</p>';
+}
+
+function renderStudents(){
+  document.getElementById('students-list').innerHTML = data.students.length ? data.students.map(function(s,i){
+    return '<div class="stat-box"><div class="stat-value">'+s.n+'</div><div class="stat-label">'+s.c+'</div><div class="item-actions"><button class="btn-edit" onclick="editStudent('+i+')">Edit</button><button class="btn-delete" onclick="deleteStudent('+i+')">Del</button></div></div>';
+  }).join('') : '<p class="empty-state">No classes</p>';
+}
+
+function switchStudentTab(tab, btn){
+  currentStudentTab = tab;
+  document.querySelectorAll('#panel-student-details .tab-nav button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderStudentDetails();
+}
+
+function renderStudentDetails(){
+  var search = document.getElementById('student-search').value.toLowerCase();
+  var classFilter = document.getElementById('student-class-filter').value;
+  var list = data.studentDetails.filter(function(s){
+    var matchSearch = !search || s.name.toLowerCase().indexOf(search) > -1 || (s.f && s.f.toLowerCase().indexOf(search) > -1) || (s.m && s.m.toLowerCase().indexOf(search) > -1) || (s.guard && s.guard.toLowerCase().indexOf(search) > -1);
+    var matchClass = !classFilter || s.c == classFilter;
+    var matchStatus = (currentStudentTab === 'active' && !s.status) || (currentStudentTab === 'dropout' && s.status === 'dropout') || (currentStudentTab === 'passout' && s.status === 'passout');
+    return matchSearch && matchClass && matchStatus;
+  });
+  document.getElementById('student-details-list').innerHTML = list.length ? list.map(function(s,i){
+    var idx = data.studentDetails.indexOf(s);
+    var photo = s.p ? '<img src="'+s.p+'" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">' : '<div style="width:40px;height:40px;border-radius:50%;background:#ddd;display:flex;align-items:center;justify-content:center;color:#999;font-size:1.2rem;">'+(s.name.charAt(0)).toUpperCase()+'</div>';
+    var statusBadge = s.status === 'dropout' ? '<span style="background:#dc3545;color:#fff;padding:2px 6px;border-radius:4px;font-size:0.7rem;">Dropout</span>' : (s.status === 'passout' ? '<span style="background:#6c757d;color:#fff;padding:2px 6px;border-radius:4px;font-size:0.7rem;">Passed Out</span>' : '');
+    var actions = '';
+    if(currentStudentTab === 'active'){
+      var upgradeBtn = (s.c !== '12' && s.c !== 'Grade 12') ? '<button class="btn-save" style="font-size:0.65rem;padding:0.15rem 0.4rem;background:#28a745;" onclick="upgradeStudent('+idx+')">Upgrade</button>' : '';
+      var passoutBtn = (s.c === '10' || s.c === 'Grade 10' || s.c === '12' || s.c === 'Grade 12') ? '<button class="btn-save" style="font-size:0.65rem;padding:0.15rem 0.4rem;background:#6c757d;" onclick="passoutStudent('+idx+')">Passout</button>' : '';
+      actions = upgradeBtn+passoutBtn+' <button class="btn-delete" style="font-size:0.65rem;padding:0.15rem 0.4rem;" onclick="dropoutStudent('+idx+')">Dropout</button> <button class="btn-edit" style="font-size:0.65rem;padding:0.15rem 0.4rem;" onclick="editStudentDetail('+idx+')">Edit</button> <button class="btn-delete" style="font-size:0.65rem;padding:0.15rem 0.4rem;" onclick="deleteStudentDetail('+idx+')">Del</button>';
+    }else if(currentStudentTab === 'dropout'){
+      actions = '<button class="btn-save" style="font-size:0.65rem;padding:0.15rem 0.4rem;background:#28a745;" onclick="dropoutStudent('+idx+')">Restore</button>';
+    }else if(currentStudentTab === 'passout'){
+      actions = '<button class="btn-save" style="font-size:0.65rem;padding:0.15rem 0.4rem;background:#28a745;" onclick="passoutStudent('+idx+')">Restore</button>';
+    }
+    return '<tr style="border-bottom:1px solid #eee;"><td style="padding:0.6rem;">'+(idx+1)+'</td><td style="padding:0.6rem;">'+photo+'</td><td style="padding:0.6rem;">'+s.name+statusBadge+'</td><td style="padding:0.6rem;">'+(s.g=='M'?'Male':'Female')+'</td><td style="padding:0.6rem;">'+s.c+'</td><td style="padding:0.6rem;">'+(s.sec||'-')+'</td><td style="padding:0.6rem;">'+(s.f||'-')+'</td><td style="padding:0.6rem;">'+(s.m||'-')+'</td><td style="padding:0.6rem;">'+(s.guard||'-')+'</td><td style="padding:0.6rem;">'+(s.guardph||'-')+'</td><td style="padding:0.6rem;">'+(s.addr||'-')+'</td><td style="padding:0.6rem;">'+(s.dob||'-')+'</td><td style="padding:0.6rem;">'+(s.age||'-')+'</td><td style="padding:0.6rem;">'+actions+'</td></tr>';
+  }).join('') : '<tr><td colspan="14" style="padding:1rem;text-align:center;color:var(--muted);">No students found</td></tr>';
+}
+
+function upgradeStudent(idx){
+  var s = data.studentDetails[idx];
+  if(s.status === 'dropout' || s.status === 'passout'){ alert('Cannot upgrade student. Restore or edit first.'); return; }
+  var currentClass = s.c;
+  var classMap = {'ECD/PPC':'1','1':'2','2':'3','3':'4','4':'5','5':'6','6':'7','7':'8','8':'9','9':'10','10':'11','11':'12'};
+  var nextClass = classMap[currentClass];
+  if(nextClass){
+    s.c = nextClass;
+    data.studentDetails[idx] = s;
+    saveData();
+    renderStudentDetails();
+    updateDashboardStats();
+    showToast(s.name + ' upgraded to Grade ' + nextClass);
+  }
+}
+
+function dropoutStudent(idx){
+  var s = data.studentDetails[idx];
+  if(s.status === 'dropout'){
+    if(confirm('Restore ' + s.name + ' from dropout?')){
+      s.status = '';
+      data.studentDetails[idx] = s;
+      saveData();
+      renderStudentDetails();
+      updateDashboardStats();
+      showToast(s.name + ' restored');
+    }
+  }else{
+    if(confirm('Mark ' + s.name + ' as dropout? This will not delete the student but mark them as dropout.')){
+      s.status = 'dropout';
+      data.studentDetails[idx] = s;
+      saveData();
+      renderStudentDetails();
+      updateDashboardStats();
+      showToast(s.name + ' marked as dropout');
+    }
+  }
+}
+
+function passoutStudent(idx){
+  var s = data.studentDetails[idx];
+  if(s.status === 'passout'){
+    if(confirm('Restore ' + s.name + ' from passout?')){
+      s.status = '';
+      data.studentDetails[idx] = s;
+      saveData();
+      renderStudentDetails();
+      updateDashboardStats();
+      showToast(s.name + ' restored');
+    }
+  }else{
+    if(confirm('Mark ' + s.name + ' as passed out? This student has completed Grade 12.')){
+      s.status = 'passout';
+      data.studentDetails[idx] = s;
+      saveData();
+      renderStudentDetails();
+      updateDashboardStats();
+      showToast(s.name + ' marked as passed out');
+    }
+  }
+}
+
+function updateDashboardStats(){
+  var activeStudents = data.studentDetails.filter(function(s){ return s.status !== 'dropout' && s.status !== 'passout'; }).length;
+  data.stats.t = activeStudents;
+  saveData();
+}
+
+function filterStudentDetails(){
+  renderStudentDetails();
+}
+
+var studentPhotoData = '';
+
+function openAddStudentDetail(){
+  studentPhotoData = '';
+  document.getElementById('modal-title').innerText = 'Add New Student';
+  document.getElementById('modal-body').innerHTML = '<div class="form-row"><div class="form-group"><label>Photo</label><input type="file" id="sd-photo" accept="image/*" onchange="previewStudentPhoto(this)"></div><div class="form-group"><div id="sd-photo-preview" style="width:80px;height:80px;border-radius:50%;background:#eee;display:flex;align-items:center;justify-content:center;overflow:hidden;"></div></div></div><div class="form-row"><div class="form-group"><label>Full Name *</label><input type="text" id="sd-name"></div><div class="form-group"><label>Gender</label><select id="sd-g"><option value="M">Male</option><option value="F">Female</option></select></div></div><div class="form-row"><div class="form-group"><label>Class</label><select id="sd-c"><option value="ECD/PPC">ECD</option><option value="1">Grade 1</option><option value="2">Grade 2</option><option value="3">Grade 3</option><option value="4">Grade 4</option><option value="5">Grade 5</option><option value="6">Grade 6</option><option value="7">Grade 7</option><option value="8">Grade 8</option><option value="9">Grade 9</option><option value="10">Grade 10</option><option value="11">Grade 11</option><option value="12">Grade 12</option></select></div><div class="form-group"><label>Section</label><input type="text" id="sd-sec" placeholder="Optional"></div></div><div class="form-row"><div class="form-group"><label>Father Name</label><input type="text" id="sd-f"></div><div class="form-group"><label>Mother Name</label><input type="text" id="sd-m"></div></div><div class="form-row"><div class="form-group"><label>Guardian Name</label><input type="text" id="sd-guard"></div><div class="form-group"><label>Guardian Phone</label><input type="text" id="sd-guardph"></div></div><div class="form-row"><div class="form-group"><label>Address</label><input type="text" id="sd-addr"></div><div class="form-group"><label>Date of Birth (BS)</label><input type="text" id="sd-dob" placeholder="e.g. 2075-05-15"></div></div><div class="form-row"><div class="form-group"><label>Age</label><input type="number" id="sd-age"></div></div>';
+  currentEditType = 'student-detail';
+  currentEditIndex = -1;
+  document.getElementById('modal').style.display = 'block';
+}
+
+function previewStudentPhoto(input){
+  if(input.files && input.files[0]){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      studentPhotoData = e.target.result;
+      document.getElementById('sd-photo-preview').innerHTML = '<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;">';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function editStudentDetail(idx){
+  var s = data.studentDetails[idx];
+  studentPhotoData = s.p || '';
+  var photoPreview = s.p ? '<img src="'+s.p+'" style="width:100%;height:100%;object-fit:cover;">' : '<span style="color:#999;">No Photo</span>';
+  document.getElementById('modal-title').innerText = 'Edit Student';
+  document.getElementById('modal-body').innerHTML = '<div class="form-row"><div class="form-group"><label>Photo</label><input type="file" id="sd-photo" accept="image/*" onchange="previewStudentPhoto(this)"></div><div class="form-group"><div id="sd-photo-preview" style="width:80px;height:80px;border-radius:50%;background:#eee;display:flex;align-items:center;justify-content:center;overflow:hidden;">'+photoPreview+'</div></div></div><div class="form-row"><div class="form-group"><label>Full Name *</label><input type="text" id="sd-name" value="'+s.name+'"></div><div class="form-group"><label>Gender</label><select id="sd-g"><option value="M"'+(s.g=='M'?' selected':'')+'>Male</option><option value="F"'+(s.g=='F'?' selected':'')+'>Female</option></select></div></div><div class="form-row"><div class="form-group"><label>Class</label><select id="sd-c"><option value="ECD/PPC"'+(s.c=='ECD/PPC'?' selected':'')+'>ECD</option><option value="1"'+(s.c=='1'?' selected':'')+'>Grade 1</option><option value="2"'+(s.c=='2'?' selected':'')+'>Grade 2</option><option value="3"'+(s.c=='3'?' selected':'')+'>Grade 3</option><option value="4"'+(s.c=='4'?' selected':'')+'>Grade 4</option><option value="5"'+(s.c=='5'?' selected':'')+'>Grade 5</option><option value="6"'+(s.c=='6'?' selected':'')+'>Grade 6</option><option value="7"'+(s.c=='7'?' selected':'')+'>Grade 7</option><option value="8"'+(s.c=='8'?' selected':'')+'>Grade 8</option><option value="9"'+(s.c=='9'?' selected':'')+'>Grade 9</option><option value="10"'+(s.c=='10'?' selected':'')+'>Grade 10</option><option value="11"'+(s.c=='11'?' selected':'')+'>Grade 11</option><option value="12"'+(s.c=='12'?' selected':'')+'>Grade 12</option></select></div><div class="form-group"><label>Section</label><input type="text" id="sd-sec" value="'+(s.sec||'')+'"></div></div><div class="form-row"><div class="form-group"><label>Father Name</label><input type="text" id="sd-f" value="'+(s.f||'')+'"></div><div class="form-group"><label>Mother Name</label><input type="text" id="sd-m" value="'+(s.m||'')+'"></div></div><div class="form-row"><div class="form-group"><label>Guardian Name</label><input type="text" id="sd-guard" value="'+(s.guard||'')+'"></div><div class="form-group"><label>Guardian Phone</label><input type="text" id="sd-guardph" value="'+(s.guardph||'')+'"></div></div><div class="form-row"><div class="form-group"><label>Address</label><input type="text" id="sd-addr" value="'+(s.addr||'')+'"></div><div class="form-group"><label>Date of Birth (BS)</label><input type="text" id="sd-dob" value="'+(s.dob||'')+'"></div></div><div class="form-row"><div class="form-group"><label>Age</label><input type="number" id="sd-age" value="'+(s.age||'')+'"></div></div>';
+  currentEditType = 'student-detail';
+  currentEditIndex = idx;
+  document.getElementById('modal').style.display = 'block';
+}
+
+function deleteStudentDetail(idx){
+  if(confirm('Delete this student permanently?')){
+    data.studentDetails.splice(idx,1);
+    saveData();
+    renderStudentDetails();
+    updateDashboardStats();
+    showToast('Student deleted');
+  }
+}
+
+function saveStudentDetail(){
+  console.log('saveStudentDetail called, currentEditIndex:', currentEditIndex, 'currentEditType:', currentEditType);
+  var nameEl = document.getElementById('sd-name');
+  if(!nameEl || !nameEl.value){ alert('Please enter student name'); return; }
+  var name = nameEl.value;
+  var s = {
+    name: name,
+    g: document.getElementById('sd-g').value,
+    c: document.getElementById('sd-c').value,
+    sec: document.getElementById('sd-sec').value,
+    f: document.getElementById('sd-f').value,
+    m: document.getElementById('sd-m').value,
+    guard: document.getElementById('sd-guard').value,
+    guardph: document.getElementById('sd-guardph').value,
+    addr: document.getElementById('sd-addr').value,
+    dob: document.getElementById('sd-dob').value,
+    age: parseInt(document.getElementById('sd-age').value) || 0,
+    p: studentPhotoData
+  };
+  console.log('Saving student:', s);
+  if(currentEditIndex > -1){
+    if(!studentPhotoData && data.studentDetails[currentEditIndex].p){
+      s.p = data.studentDetails[currentEditIndex].p;
+    }
+    data.studentDetails[currentEditIndex] = s;
+  }else{
+    data.studentDetails.push(s);
+  }
+  saveData();
+  renderStudentDetails();
+  updateDashboardStats();
+  closeModal();
+  studentPhotoData = '';
+  showToast('Student saved');
+}
+
+function renderGallery(){
+  document.getElementById('gallery-list').innerHTML = data.gallery.length ? data.gallery.map(function(g,i){
+    var imgCount = g.imgs ? g.imgs.length : 0;
+    var imgHtml = '';
+    if(imgCount > 0){
+      imgHtml = '<div style="display:flex;gap:4px;flex-wrap:wrap;">';
+      g.imgs.slice(0,4).forEach(function(img){
+        imgHtml += '<img src="'+img+'" style="width:60px;height:60px;object-fit:cover;border-radius:4px;">';
+      });
+      if(imgCount > 4) imgHtml += '<div style="width:60px;height:60px;background:var(--cream);display:flex;align-items:center;justify-content:center;border-radius:4px;">+'+(imgCount-4)+'</div>';
+      imgHtml += '</div>';
+    }else{
+      imgHtml = '<div style="width:100%;height:120px;background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--muted);border-radius:8px;">+</div>';
+    }
+    return '<div class="item-card">'+imgHtml+'<div class="item-title">'+g.c+'</div><div class="item-meta">'+imgCount+' images</div><div class="item-actions"><button class="btn-edit" onclick="editGallery('+i+')">Edit</button><button class="btn-delete" onclick="deleteGallery('+i+')">Delete</button></div></div>';
+  }).join('') : '<p class="empty-state">No collection</p>';
+}
+
+function renderInquiries(){
+  console.log('Rendering inquiries:', data.inquiries);
+  var html = '';
+  data.inquiries.forEach(function(iq,idx){
+    var docsHtml = '';
+    if(iq.ph){
+      docsHtml += '<div style="display:inline-block;margin-right:10px;vertical-align:top;"><img src="'+iq.ph+'" style="width:60px;height:60px;object-fit:cover;border-radius:4px;border:2px solid var(--gold);cursor:pointer;" title="Click to view" onclick="viewImage(this.src)"><br><button onclick="downloadFile('+idx+',\'ph\')" style="margin-top:4px;padding:3px 8px;font-size:0.7rem;background:var(--gold);color:white;border:none;border-radius:3px;cursor:pointer;">⬇ Download</button></div>';
+    }
+    if(iq.bc){
+      docsHtml += '<div style="display:inline-block;margin-right:10px;margin-bottom:5px;"><button onclick="viewDoc('+idx+',\'bc\')" style="padding:5px 10px;background:var(--cream);border-radius:4px;font-size:0.8rem;border:1px solid var(--border);cursor:pointer;">📄 Birth Cert</button><button onclick="downloadFile('+idx+',\'bc\')" style="padding:5px 8px;background:var(--gold);color:white;border:none;border-radius:4px;cursor:pointer;margin-left:3px;">⬇</button></div>';
+    }
+    if(iq.pc){
+      docsHtml += '<div style="display:inline-block;margin-bottom:5px;"><button onclick="viewDoc('+idx+',\'pc\')" style="padding:5px 10px;background:var(--cream);border-radius:4px;font-size:0.8rem;border:1px solid var(--border);cursor:pointer;">📜 School Cert</button><button onclick="downloadFile('+idx+',\'pc\')" style="padding:5px 8px;background:var(--gold);color:white;border:none;border-radius:4px;cursor:pointer;margin-left:3px;">⬇</button></div>';
+    }
+    html += '<div class="inquiry-card" style="border-left:4px solid var(--saffron);"><div class="inquiry-header"><div class="item-title" style="font-size:1.1rem;">'+iq.n+'</div><span class="badge badge-'+(iq.s==='new'?'new':'replied')+'">'+iq.s+'</span></div><div class="item-meta" style="font-size:0.9rem;margin-top:8px;"><strong>Grade:</strong> '+iq.c+' | <strong>Phone:</strong> '+iq.p+' | <strong>DOB:</strong> '+(iq.dob||'N/A')+'</div><div class="item-meta" style="font-size:0.9rem;"><strong>Address:</strong> '+(iq.a||'N/A')+'</div><div class="item-meta" style="font-size:0.8rem;color:var(--muted);">Submitted: '+iq.d+'</div>'+(docsHtml ? '<div class="item-meta" style="margin-top:12px;padding-top:8px;border-top:1px solid var(--border);"><strong>Documents:</strong><br>'+docsHtml+'</div>' : '')+'<div class="item-actions" style="margin-top:10px;"><button class="btn-delete" onclick="deleteInquiry('+idx+')">Delete</button></div></div>';
+  });
+  document.getElementById('inquiries-list').innerHTML = html ? html : '<p class="empty-state">No inquiries</p>';
+}
+
+function viewImage(src){
+  var overlay = document.createElement('div');
+  overlay.id = 'img-viewer-overlay';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:99999;cursor:pointer;';
+  overlay.innerHTML = '<img src="'+src+'" style="max-width:90%;max-height:90%;border-radius:10px;cursor:default;">';
+  overlay.onclick = function(){ document.body.removeChild(overlay); };
+  document.body.appendChild(overlay);
+}
+
+function viewDoc(idx, type){
+  var iq = data.inquiries[idx];
+  var src = '';
+  if(type === 'bc') src = iq.bc;
+  else if(type === 'pc') src = iq.pc;
+  
+  if(!src){
+    alert('No document uploaded');
+    return;
+  }
+  
+  // Check if it's an image or PDF
+  if(src.startsWith('data:image')){
+    viewImage(src);
+  }else if(src.startsWith('data:application/pdf')){
+    // Open PDF in new window
+    var win = window.open('','_blank');
+    win.document.write('<iframe src="'+src+'" style="width:100%;height:100%;border:none;"></iframe>');
+  }else{
+    // For other files, try to open directly
+    window.open(src, '_blank');
+  }
+}
+
+function downloadFile(idx, type){
+  var iq = data.inquiries[idx];
+  var src = '';
+  var filename = '';
+  
+  if(type === 'ph'){ src = iq.ph; filename = iq.n + '_photo.jpg'; }
+  else if(type === 'bc'){ src = iq.bc; filename = iq.n + '_birth_certificate.jpg'; }
+  else if(type === 'pc'){ src = iq.pc; filename = iq.n + '_school_certificate.jpg'; }
+  
+  if(!src){
+    alert('No file to download');
+    return;
+  }
+  
+  // Create download link
+  var link = document.createElement('a');
+  link.href = src;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function deleteInquiry(idx){
+  if(confirm('Delete this inquiry?')){
+    data.inquiries.splice(idx,1);
+    saveData();
+    renderInquiries();
+    showToast('Deleted!');
+  }
+}
+
+function clearAllInquiries(){
+  if(confirm('Delete all inquiries?')){
+    data.inquiries = [];
+    saveData();
+    renderInquiries();
+    showToast('All cleared!');
+  }
+}
+
+function openAddTeacher(){
+  currentEditType = 'teacher';
+  currentEditIndex = -1;
+  document.getElementById('modal-title').innerHTML = 'Add Teacher';
+  document.getElementById('modal-body').innerHTML = 
+    '<div class="photo-upload"><div class="photo-preview male" id="photo-preview">+</div><label for="photo-input">Upload Photo</label><input type="file" id="photo-input" accept="image/*" onchange="previewPhoto(this)"></div>'+
+    '<div class="form-group"><label>Name</label><input id="m-name"></div>'+
+    '<div class="form-row"><div class="form-group"><label>Gender</label><select id="m-g"><option value="M">Male</option><option value="F">Female</option></select></div><div class="form-group"><label>Qualification</label><input id="m-q"></div></div>'+
+    '<div class="form-row"><div class="form-group"><label>Level</label><select id="m-l"><option>ECD</option><option>Primary 1-5</option><option>Lower Secondary 6-8</option><option>Secondary 9-10</option><option>Secondary 11-12</option></select></div><div class="form-group"><label>Subject</label><input id="m-s"></div></div>';
+  document.getElementById('modal').style.display = 'block';
+}
+
+function editTeacher(index){
+  currentEditType = 'teacher';
+  currentEditIndex = index;
+  var t = data.teachers[index];
+  document.getElementById('modal-title').innerHTML = 'Edit Teacher';
+  var photoPreview = t.p ? '<div class="photo-preview"><img src="'+t.p+'"></div>' : '<div class="photo-preview '+(t.g==='F'?'female':'male')+'">'+initials(t.name)+'</div>';
+  document.getElementById('modal-body').innerHTML = 
+    '<div class="photo-upload"><div class="photo-preview" id="photo-preview">'+photoPreview+'</div><label for="photo-input">Change Photo</label><input type="file" id="photo-input" accept="image/*" onchange="previewPhoto(this)"></div>'+
+    '<div class="form-group"><label>Name</label><input id="m-name" value="'+t.name+'"></div>'+
+    '<div class="form-row"><div class="form-group"><label>Gender</label><select id="m-g"><option value="M"'+(t.g==='M'?' selected':'')+'>Male</option><option value="F"'+(t.g==='F'?' selected':'')+'>Female</option></select></div><div class="form-group"><label>Qualification</label><input id="m-q" value="'+t.q+'"></div></div>'+
+    '<div class="form-row"><div class="form-group"><label>Level</label><select id="m-l"><option'+(t.l==='ECD'?' selected':'')+'>ECD</option><option'+(t.l==='Primary 1-5'?' selected':'')+'>Primary 1-5</option><option'+(t.l==='Lower Secondary 6-8'?' selected':'')+'>Lower Secondary 6-8</option><option'+(t.l==='Secondary 9-10'?' selected':'')+'>Secondary 9-10</option><option'+(t.l==='Secondary 11-12'?' selected':'')+'>Secondary 11-12</option></select></div><div class="form-group"><label>Subject</label><input id="m-s" value="'+t.s+'"></div></div>';
+  document.getElementById('modal').style.display = 'block';
+}
+
+function compressImage(file, callback, maxWidth=300){
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var img = new Image();
+    img.onload = function(){
+      var canvas = document.createElement('canvas');
+      var w = img.width, h = img.height;
+      if(w > maxWidth){ h = h * maxWidth / w; w = maxWidth; }
+      canvas.width = w; canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img,0,0,w,h);
+      callback(canvas.toDataURL('image/jpeg',0.7));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function previewPhoto(input){
+  if(input.files && input.files[0]){
+    compressImage(input.files[0], function(data){
+      photoData = data;
+      var preview = document.getElementById('photo-preview');
+      preview.innerHTML = '<img src="'+data+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+    });
+  }
+}
+
+function deleteTeacher(index){
+  if(confirm('Delete this teacher?')){
+    data.teachers.splice(index,1);
+    saveData();
+    renderTeachers();
+    showToast('Deleted!');
+  }
+}
+
+function addNotice(){
+  currentEditType = 'notice';
+  currentEditIndex = -1;
+  document.getElementById('modal-title').innerHTML = 'Add Notice';
+  document.getElementById('modal-body').innerHTML = 
+    '<div class="form-row"><div class="form-group"><label>Category</label><select id="m-c"><option>exam</option><option>admission</option><option>event</option></select></div><div class="form-group"><label>Date</label><input id="m-d"></div></div><div class="form-group"><label>Title</label><input id="m-t"></div><div class="form-group"><label>Body</label><textarea id="m-b"></textarea></div>';
+  document.getElementById('modal').style.display = 'block';
+}
+
+function editNotice(index){
+  currentEditType = 'notice';
+  currentEditIndex = index;
+  var n = data.notices[index];
+  document.getElementById('modal-title').innerHTML = 'Edit Notice';
+  document.getElementById('modal-body').innerHTML = 
+    '<div class="form-row"><div class="form-group"><label>Category</label><select id="m-c"><option'+(n.c==='exam'?' selected':'')+'>exam</option><option'+(n.c==='admission'?' selected':'')+'>admission</option><option'+(n.c==='event'?' selected':'')+'>event</option></select></div><div class="form-group"><label>Date</label><input id="m-d" value="'+n.d+'"></div></div><div class="form-group"><label>Title</label><input id="m-t" value="'+n.t+'"></div><div class="form-group"><label>Body</label><textarea id="m-b">'+n.b+'</textarea></div>';
+  document.getElementById('modal').style.display = 'block';
+}
+
+function deleteNotice(index){
+  if(confirm('Delete this notice?')){
+    data.notices.splice(index,1);
+    saveData();
+    renderNotices();
+    showToast('Deleted!');
+  }
+}
+
+function addStudent(){
+  currentEditType = 'student';
+  currentEditIndex = -1;
+  document.getElementById('modal-title').innerHTML = 'Add Class';
+  document.getElementById('modal-body').innerHTML = 
+    '<div class="form-row"><div class="form-group"><label>Class</label><select id="m-c"><option value="ECD">ECD</option><option value="Grade 1">Grade 1</option><option value="Grade 2">Grade 2</option><option value="Grade 3">Grade 3</option><option value="Grade 4">Grade 4</option><option value="Grade 5">Grade 5</option><option value="Grade 6">Grade 6</option><option value="Grade 7">Grade 7</option><option value="Grade 8">Grade 8</option><option value="Grade 9">Grade 9</option><option value="Grade 10">Grade 10</option><option value="Grade 11">Grade 11</option><option value="Grade 12">Grade 12</option></select></div><div class="form-group"><label>Number of Students</label><input type="number" id="m-n"></div></div><div class="form-group"><label>Level</label><select id="m-s"><option value="Pre-School">Pre-School</option><option value="Basic">Basic (1-8)</option><option value="Secondary">Secondary (9-10)</option><option value="Higher">Higher Secondary (11-12)</option></select></div>';
+  document.getElementById('modal').style.display = 'block';
+}
+
+function editStudent(index){
+  currentEditType = 'student';
+  currentEditIndex = index;
+  var s = data.students[index];
+  document.getElementById('modal-title').innerHTML = 'Edit Class';
+  var clsOpts = '<option value="ECD"'+(s.c=='ECD'?' selected':'')+'>ECD</option><option value="Grade 1"'+(s.c=='Grade 1'?' selected':'')+'>Grade 1</option><option value="Grade 2"'+(s.c=='Grade 2'?' selected':'')+'>Grade 2</option><option value="Grade 3"'+(s.c=='Grade 3'?' selected':'')+'>Grade 3</option><option value="Grade 4"'+(s.c=='Grade 4'?' selected':'')+'>Grade 4</option><option value="Grade 5"'+(s.c=='Grade 5'?' selected':'')+'>Grade 5</option><option value="Grade 6"'+(s.c=='Grade 6'?' selected':'')+'>Grade 6</option><option value="Grade 7"'+(s.c=='Grade 7'?' selected':'')+'>Grade 7</option><option value="Grade 8"'+(s.c=='Grade 8'?' selected':'')+'>Grade 8</option><option value="Grade 9"'+(s.c=='Grade 9'?' selected':'')+'>Grade 9</option><option value="Grade 10"'+(s.c=='Grade 10'?' selected':'')+'>Grade 10</option><option value="Grade 11"'+(s.c=='Grade 11'?' selected':'')+'>Grade 11</option><option value="Grade 12"'+(s.c=='Grade 12'?' selected':'')+'>Grade 12</option>';
+  var lvlOpts = '<option value="Pre-School"'+(s.s=='Pre-School'?' selected':'')+'>Pre-School</option><option value="Basic"'+(s.s=='Basic'?' selected':'')+'>Basic (1-8)</option><option value="Secondary"'+(s.s=='Secondary'?' selected':'')+'>Secondary (9-10)</option><option value="Higher"'+(s.s=='Higher'?' selected':'')+'>Higher Secondary (11-12)</option>';
+  document.getElementById('modal-body').innerHTML = 
+    '<div class="form-row"><div class="form-group"><label>Class</label><select id="m-c">'+clsOpts+'</select></div><div class="form-group"><label>Number of Students</label><input type="number" id="m-n" value="'+s.n+'"></div></div><div class="form-group"><label>Level</label><select id="m-s">'+lvlOpts+'</select></div>';
+  document.getElementById('modal').style.display = 'block';
+}
+
+function deleteStudent(index){
+  if(confirm('Delete this class?')){
+    data.students.splice(index,1);
+    saveData();
+    renderStudents();
+    showToast('Deleted!');
+  }
+}
+
+var galleryImages = [];
+
+function addGallery(){
+  currentEditType = 'gallery';
+  currentEditIndex = -1;
+  galleryImages = [];
+  document.getElementById('modal-title').innerHTML = 'Add Collection';
+  document.getElementById('modal-body').innerHTML = 
+    '<div class="form-group"><label>Collection Name</label><input id="m-c" placeholder="e.g. Annual Function 2082"></div>'+
+    '<div class="form-group"><label>Order</label><input type="number" id="m-i" placeholder="Display order"></div>'+
+    '<div class="form-group"><label>Add Images (select multiple)</label><input type="file" id="gallery-images-input" accept="image/*" multiple onchange="handleGalleryImages(this)"></div>'+
+    '<div id="gallery-preview-grid" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;"></div>';
+  document.getElementById('modal').style.display = 'block';
+}
+
+function handleGalleryImages(input){
+  if(input.files){
+    var files = Array.from(input.files);
+    var processed = 0;
+    files.forEach(function(file){
+      compressImage(file, function(data){
+        galleryImages.push(data);
+        processed++;
+        renderGalleryPreview();
+        if(processed === files.length){
+          console.log('All images processed, total:', galleryImages.length);
+        }
+      }, 600);
+    });
+  }
+}
+
+function renderGalleryPreview(){
+  var grid = document.getElementById('gallery-preview-grid');
+  if(grid){
+    grid.innerHTML = galleryImages.map(function(img,i){
+      return '<div style="position:relative;width:80px;height:80px;"><img src="'+img+'" style="width:100%;height:100%;object-fit:cover;border-radius:4px;"><button type="button" onclick="removeGalleryImage('+i+')" style="position:absolute;top:-5px;right:-5px;width:20px;height:20px;background:red;color:white;border-radius:50%;border:none;cursor:pointer;font-size:12px;line-height:1;">x</button></div>';
+    }).join('');
+  }
+}
+
+function removeGalleryImage(idx){
+  galleryImages.splice(idx,1);
+  renderGalleryPreview();
+}
+
+function editGallery(index){
+  currentEditType = 'gallery';
+  currentEditIndex = index;
+  var g = data.gallery[index];
+  galleryImages = g.imgs ? [...g.imgs] : [];
+  var existingImgHtml = '';
+  if(g.imgs && g.imgs.length > 0){
+    existingImgHtml = '<div style="margin-bottom:10px;"><label>Current Images:</label><div id="gallery-preview-grid" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:5px;">'+g.imgs.map(function(img,i){
+      return '<div style="position:relative;width:80px;height:80px;"><img src="'+img+'" style="width:100%;height:100%;object-fit:cover;border-radius:4px;"><button type="button" onclick="removeGalleryImage('+i+')" style="position:absolute;top:-5px;right:-5px;width:20px;height:20px;background:red;color:white;border-radius:50%;border:none;cursor:pointer;font-size:12px;line-height:1;">x</button></div>';
+    }).join('')+'</div></div>';
+  }
+  document.getElementById('modal-title').innerHTML = 'Edit Collection';
+  document.getElementById('modal-body').innerHTML = 
+    '<div class="form-group"><label>Collection Name</label><input id="m-c" value="'+g.c+'"></div>'+
+    '<div class="form-group"><label>Order</label><input type="number" id="m-i" value="'+g.i+'"></div>'+
+    existingImgHtml +
+    '<div class="form-group"><label>Add More Images</label><input type="file" id="gallery-images-input" accept="image/*" multiple onchange="handleGalleryImages(this)"></div>'+
+    '<div id="gallery-preview-grid" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;"></div>';
+  document.getElementById('modal').style.display = 'block';
+}
+
+function deleteGallery(index){
+  if(confirm('Delete this gallery item?')){
+    data.gallery.splice(index,1);
+    saveData();
+    renderGallery();
+    showToast('Deleted!');
+  }
+}
+
+function addEvent(){
+  currentEditType = 'event';
+  currentEditIndex = -1;
+  document.getElementById('modal-title').innerText = 'Add Event';
+  var formHtml = '<div class="photo-upload">'+
+    '<div class="photo-preview" id="photo-preview" style="width:100%;height:180px;border-radius:8px;background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:3rem;color:var(--muted);">+</div>'+
+    '<label for="event-photo-input" style="display:block;margin-top:0.5rem;text-align:center;padding:0.5rem;background:var(--cream);border:1px dashed var(--border);border-radius:8px;cursor:pointer;font-size:0.8rem;">Upload Event Photo</label>'+
+    '<input type="file" id="event-photo-input" accept="image/*" style="display:none;" onchange="handleEventPhoto(this)"></div>'+
+    '<div class="form-group"><label>Category</label><select id="m-c"><option value="academic">Academic</option><option value="sports">Sports</option><option value="cultural">Cultural</option><option value="other">Other</option></select></div>'+
+    '<div class="form-group"><label>Date</label><input id="m-d" placeholder="e.g. Baisakh 2083"></div>'+
+    '<div class="form-group"><label>Title</label><input id="m-t" placeholder="Event title"></div>'+
+    '<div class="form-group"><label>Location</label><input id="m-d2" placeholder="Event location"></div>';
+  document.getElementById('modal-body').innerHTML = formHtml;
+  document.getElementById('modal').style.display = 'block';
+}
+
+function handleEventPhoto(input){
+  if(input.files && input.files[0]){
+    compressImage(input.files[0], function(data){
+      photoData = data;
+      var preview = document.getElementById('photo-preview');
+      if(preview){
+        preview.innerHTML = '<img src="'+data+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
+      }
+    }, 600);
+  }
+}
+
+function editEvent(index){
+  currentEditType = 'event';
+  currentEditIndex = index;
+  var e = data.events[index];
+  var photoHtml = e.img ? '<img src="'+e.img+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">' : '+';
+  document.getElementById('modal-title').innerText = 'Edit Event';
+  var formHtml = '<div class="photo-upload">'+
+    '<div class="photo-preview" id="photo-preview" style="width:100%;height:180px;border-radius:8px;background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:3rem;color:var(--muted);">'+(e.img ? '<img src="'+e.img+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">' : '+')+'</div>'+
+    '<label for="event-photo-input" style="display:block;margin-top:0.5rem;text-align:center;padding:0.5rem;background:var(--cream);border:1px dashed var(--border);border-radius:8px;cursor:pointer;font-size:0.8rem;">Change Photo</label>'+
+    '<input type="file" id="event-photo-input" accept="image/*" style="display:none;" onchange="handleEventPhoto(this)"></div>'+
+    '<div class="form-group"><label>Category</label><select id="m-c"><option value="academic" '+(e.c==='academic'?'selected':'')+'>Academic</option><option value="sports" '+(e.c==='sports'?'selected':'')+'>Sports</option><option value="cultural" '+(e.c==='cultural'?'selected':'')+'>Cultural</option><option value="other" '+(e.c==='other'?'selected':'')+'>Other</option></select></div>'+
+    '<div class="form-group"><label>Date</label><input id="m-d" value="'+e.d+'"></div>'+
+    '<div class="form-group"><label>Title</label><input id="m-t" value="'+e.t+'"></div>'+
+    '<div class="form-group"><label>Location</label><input id="m-d2" value="'+(e.d2||'')+'"></div>';
+  document.getElementById('modal-body').innerHTML = formHtml;
+  document.getElementById('modal').style.display = 'block';
+}
+
+function deleteEvent(index){
+  if(confirm('Delete this event?')){
+    data.events.splice(index,1);
+    saveData();
+    renderEvents();
+    showToast('Deleted!');
+  }
+}
+
+function renderEvents(filter){
+  var colors = {academic:'var(--gold)',sports:'var(--green)',cultural:'#8FA3FF',other:'#6B7280'};
+  var list = data.events;
+  if(filter && filter !== 'all'){
+    list = data.events.filter(function(e){return e.c === filter;});
+  }
+  document.getElementById('events-list').innerHTML = list.length ? list.map(function(e,i){
+    var idx = data.events.indexOf(e);
+    var imgHtml = e.img ? '<img src="'+e.img+'" style="width:100%;height:120px;object-fit:cover;border-radius:8px;">' : '<div style="width:100%;height:120px;background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--muted);border-radius:8px;">📷</div>';
+    return '<div class="item-card">'+imgHtml+'<div class="item-title">'+e.t+'</div><div class="item-meta"><span class="badge" style="background:'+colors[e.c]+'">'+e.c+'</span> | '+e.d+(e.d2?' | '+e.d2:'')+'</div><div class="item-actions"><button class="btn-edit" onclick="editEvent('+idx+')">Edit</button><button class="btn-delete" onclick="deleteEvent('+idx+')">Delete</button></div></div>';
+  }).join('') : '<p class="empty-state">No events</p>';
+}
+
+function filterEvents(f,btn){
+  renderEvents(f);
+  document.querySelectorAll('.tab-nav button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+}
+
+function closeModal(){
+  document.getElementById('modal').style.display = 'none';
+  document.getElementById('modal').classList.remove('open');
+}
+
+var photoData = '';
+
+function saveModalData(){
+  console.log('saveModalData called, type:', currentEditType, 'index:', currentEditIndex);
+  if(currentEditType === 'student-detail'){
+    console.log('Calling saveStudentDetail...');
+    saveStudentDetail();
+    return;
+  }
+  if(currentEditType === 'staff'){
+    var stName = document.getElementById('st-name').value;
+    if(!stName){ alert('Please enter staff name'); return; }
+    var st = {
+      name: stName,
+      phone: document.getElementById('st-phone').value,
+      dob: document.getElementById('st-dob').value,
+      p: staffPhotoData
+    };
+    if(currentEditIndex > -1){
+      data.staff[currentEditIndex] = st;
+    }else{
+      data.staff.push(st);
+    }
+    saveData();
+    renderStaff();
+    closeModal();
+    showToast('Staff saved');
+    return;
+  }
+  if(currentEditType === 'teacher'){
+    var t = {
+      name: document.getElementById('m-name').value,
+      g: document.getElementById('m-g').value,
+      q: document.getElementById('m-q').value,
+      l: document.getElementById('m-l').value,
+      s: document.getElementById('m-s').value,
+      p: photoData || (currentEditIndex > -1 ? data.teachers[currentEditIndex].p : '')
+    };
+    if(currentEditIndex > -1) data.teachers[currentEditIndex] = t;
+    else data.teachers.push(t);
+    photoData = '';
+    renderTeachers();
+  }else if(currentEditType === 'notice'){
+    var n = {c:document.getElementById('m-c').value, t:document.getElementById('m-t').value, b:document.getElementById('m-b').value, d:document.getElementById('m-d').value};
+    if(currentEditIndex > -1) data.notices[currentEditIndex] = n;
+    else data.notices.push(n);
+    renderNotices();
+  }else if(currentEditType === 'student'){
+    var s = {c:document.getElementById('m-c').value, n:parseInt(document.getElementById('m-n').value), s:document.getElementById('m-s').value};
+    if(currentEditIndex > -1) data.students[currentEditIndex] = s;
+    else data.students.push(s);
+    renderStudents();
+  }else if(currentEditType === 'gallery'){
+    console.log('Saving gallery, images count:', galleryImages.length);
+    var existingImgs = currentEditIndex > -1 && data.gallery[currentEditIndex].imgs ? data.gallery[currentEditIndex].imgs : [];
+    var allImgs = [...existingImgs, ...galleryImages];
+    var g = {c:document.getElementById('m-c').value, i:parseInt(document.getElementById('m-i').value), imgs:allImgs};
+    console.log('Gallery item:', g);
+    if(currentEditIndex > -1) data.gallery[currentEditIndex] = g;
+    else data.gallery.push(g);
+    galleryImages = [];
+    photoData = '';
+    renderGallery();
+  }else if(currentEditType === 'event'){
+    var e = {c:document.getElementById('m-c').value, t:document.getElementById('m-t').value, d:document.getElementById('m-d').value, d2:document.getElementById('m-d2').value, img:photoData || (currentEditIndex > -1 ? data.events[currentEditIndex].img : '')};
+    if(currentEditIndex > -1) data.events[currentEditIndex] = e;
+    else data.events.push(e);
+    photoData = '';
+    renderEvents();
+  }
+  saveData();
+  closeModal();
+  showToast('Saved!');
+}
+
+function saveStats(){
+  data.stats = {t:parseInt(document.getElementById('stat-total').value),m:parseInt(document.getElementById('stat-male').value),f:parseInt(document.getElementById('stat-female').value),st:parseInt(document.getElementById('stat-staff').value)};
+  saveData();
+  showToast('Statistics saved!');
+}
+
+function saveSettings(){
+  data.settings = {name:document.getElementById('set-name').value,ht:document.getElementById('set-ht').value,phone:document.getElementById('set-phone').value,email:document.getElementById('set-email').value,address:document.getElementById('set-address').value,iemis:document.getElementById('set-iemis').value};
+  saveData();
+  showToast('Settings saved!');
+}
+
+function saveData(){
+  console.log('Saving data, size:', JSON.stringify(data).length, 'chars');
+  try {
+    localStorage.setItem('schoolData',JSON.stringify(data));
+    console.log('Saved successfully');
+  } catch(e) {
+    console.error('Storage full, trying to compress...');
+    // Remove large image data and try again
+    if(data.gallery) data.gallery.forEach(g => { if(g.img && g.img.length > 50000) g.img = ''; });
+    if(data.events) data.events.forEach(e => { if(e.img && e.img.length > 50000) e.img = ''; });
+    localStorage.setItem('schoolData',JSON.stringify(data));
+  }
+}
+
+function showToast(msg){
+  var t = document.getElementById('toast');
+  t.innerHTML = msg;
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2500);
+}
+
+function resetAllData(){
+  if(confirm('Are you sure? This will delete all your data and reset to defaults.')){
+    localStorage.removeItem('schoolData');
+    localStorage.removeItem('admissionInquiries');
+    location.reload();
+  }
+}
+
+// Initialize
+renderDashboard();
+document.getElementById('stat-total').value = data.stats.t;
+document.getElementById('stat-male').value = data.stats.m;
+document.getElementById('stat-female').value = data.stats.f;
+document.getElementById('stat-staff').value = data.stats.st;
+document.getElementById('set-name').value = data.settings.name;
+document.getElementById('set-ht').value = data.settings.ht;
+document.getElementById('set-phone').value = data.settings.phone;
+document.getElementById('set-email').value = data.settings.email;
+document.getElementById('set-address').value = data.settings.address;
+document.getElementById('set-iemis').value = data.settings.iemis;
+</script>
+</div>
+</body>
+</html>

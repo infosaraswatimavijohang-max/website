@@ -1,0 +1,437 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "Shree Saraswati Secondary School",
+      "file_type": "document",
+      "source_file": "AGENTS.md",
+      "source_location": null,
+      "id": "Shree_Saraswati_Secondary_School",
+      "community": 0,
+      "norm_label": "shree saraswati secondary school"
+    },
+    {
+      "label": "static HTML",
+      "file_type": "document",
+      "source_file": "AGENTS.md",
+      "source_location": null,
+      "id": "static_HTML",
+      "community": 0,
+      "norm_label": "static html"
+    },
+    {
+      "label": "vanilla HTML/CSS/JS",
+      "file_type": "document",
+      "source_file": "AGENTS.md",
+      "source_location": null,
+      "id": "vanilla_HTML_CSS_JS",
+      "community": 0,
+      "norm_label": "vanilla html/css/js"
+    },
+    {
+      "label": "Google Fonts",
+      "file_type": "document",
+      "source_file": "AGENTS.md",
+      "source_location": null,
+      "id": "Google_Fonts",
+      "community": 0,
+      "norm_label": "google fonts"
+    },
+    {
+      "label": "base64 images",
+      "file_type": "document",
+      "source_file": "AGENTS.md",
+      "source_location": null,
+      "id": "base64_images",
+      "community": 0,
+      "norm_label": "base64 images"
+    },
+    {
+      "label": "localStorage",
+      "file_type": "document",
+      "source_file": "AGENTS.md",
+      "source_location": null,
+      "id": "localStorage",
+      "community": 0,
+      "norm_label": "localstorage"
+    },
+    {
+      "label": "admin.html",
+      "file_type": "document",
+      "source_file": "AGENTS.md",
+      "source_location": null,
+      "id": "admin_html",
+      "community": 1,
+      "norm_label": "admin.html"
+    },
+    {
+      "label": "index.html",
+      "file_type": "document",
+      "source_file": "AGENTS.md",
+      "source_location": null,
+      "id": "index_html",
+      "community": 0,
+      "norm_label": "index.html"
+    },
+    {
+      "label": "Dashboard",
+      "file_type": "document",
+      "source_file": "admin.html",
+      "source_location": null,
+      "id": "dashboard",
+      "community": 1,
+      "norm_label": "dashboard"
+    },
+    {
+      "label": "Teachers Panel",
+      "file_type": "document",
+      "source_file": "admin.html",
+      "source_location": null,
+      "id": "teachers",
+      "community": 2,
+      "norm_label": "teachers panel"
+    },
+    {
+      "label": "Notices Panel",
+      "file_type": "document",
+      "source_file": "admin.html",
+      "source_location": null,
+      "id": "notices",
+      "community": 3,
+      "norm_label": "notices panel"
+    },
+    {
+      "label": "Students Panel",
+      "file_type": "document",
+      "source_file": "admin.html",
+      "source_location": null,
+      "id": "students",
+      "community": 4,
+      "norm_label": "students panel"
+    },
+    {
+      "label": "Statistics Panel",
+      "file_type": "document",
+      "source_file": "admin.html",
+      "source_location": null,
+      "id": "statistics",
+      "community": 5,
+      "norm_label": "statistics panel"
+    },
+    {
+      "label": "Gallery Panel",
+      "file_type": "document",
+      "source_file": "admin.html",
+      "source_location": null,
+      "id": "gallery",
+      "community": 1,
+      "norm_label": "gallery panel"
+    },
+    {
+      "label": "Admission Inquiries Panel",
+      "file_type": "document",
+      "source_file": "admin.html",
+      "source_location": null,
+      "id": "admission_inquiries",
+      "community": 1,
+      "norm_label": "admission inquiries panel"
+    },
+    {
+      "label": "Settings Panel",
+      "file_type": "document",
+      "source_file": "admin.html",
+      "source_location": null,
+      "id": "settings",
+      "community": 6,
+      "norm_label": "settings panel"
+    },
+    {
+      "label": "Teacher Fields",
+      "file_type": "document",
+      "source_file": "admin.html",
+      "source_location": null,
+      "id": "teacher_fields",
+      "community": 2,
+      "norm_label": "teacher fields"
+    },
+    {
+      "label": "Notice Categories",
+      "file_type": "document",
+      "source_file": "admin.html",
+      "source_location": null,
+      "id": "notice_categories",
+      "community": 3,
+      "norm_label": "notice categories"
+    },
+    {
+      "label": "Student Classes (ECD-12)",
+      "file_type": "document",
+      "source_file": "admin.html",
+      "source_location": null,
+      "id": "student_classes",
+      "community": 4,
+      "norm_label": "student classes (ecd-12)"
+    },
+    {
+      "label": "School Statistics",
+      "file_type": "document",
+      "source_file": "admin.html",
+      "source_location": null,
+      "id": "school_stats",
+      "community": 5,
+      "norm_label": "school statistics"
+    },
+    {
+      "label": "School Settings",
+      "file_type": "document",
+      "source_file": "admin.html",
+      "source_location": null,
+      "id": "school_settings",
+      "community": 6,
+      "norm_label": "school settings"
+    },
+    {
+      "label": "Color Palette",
+      "file_type": "document",
+      "source_file": "admin.html",
+      "source_location": null,
+      "id": "color_palette",
+      "community": 1,
+      "norm_label": "color palette"
+    },
+    {
+      "label": "Fonts",
+      "file_type": "document",
+      "source_file": "admin.html",
+      "source_location": null,
+      "id": "fonts",
+      "community": 1,
+      "norm_label": "fonts"
+    }
+  ],
+  "links": [
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "AGENTS.md",
+      "_src": "Shree_Saraswati_Secondary_School",
+      "_tgt": "static_HTML",
+      "source": "Shree_Saraswati_Secondary_School",
+      "target": "static_HTML"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "AGENTS.md",
+      "_src": "Shree_Saraswati_Secondary_School",
+      "_tgt": "vanilla_HTML_CSS_JS",
+      "source": "Shree_Saraswati_Secondary_School",
+      "target": "vanilla_HTML_CSS_JS"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "AGENTS.md",
+      "_src": "Shree_Saraswati_Secondary_School",
+      "_tgt": "Google_Fonts",
+      "source": "Shree_Saraswati_Secondary_School",
+      "target": "Google_Fonts"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "AGENTS.md",
+      "_src": "Shree_Saraswati_Secondary_School",
+      "_tgt": "base64_images",
+      "source": "Shree_Saraswati_Secondary_School",
+      "target": "base64_images"
+    },
+    {
+      "relation": "uses_for_persistence",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "AGENTS.md",
+      "_src": "Shree_Saraswati_Secondary_School",
+      "_tgt": "localStorage",
+      "source": "Shree_Saraswati_Secondary_School",
+      "target": "localStorage"
+    },
+    {
+      "relation": "has_admin_panel",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "AGENTS.md",
+      "_src": "Shree_Saraswati_Secondary_School",
+      "_tgt": "admin_html",
+      "source": "Shree_Saraswati_Secondary_School",
+      "target": "admin_html"
+    },
+    {
+      "relation": "represents",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "AGENTS.md",
+      "_src": "index_html",
+      "_tgt": "Shree_Saraswati_Secondary_School",
+      "source": "Shree_Saraswati_Secondary_School",
+      "target": "index_html"
+    },
+    {
+      "relation": "has_panel",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin.html",
+      "_src": "admin_html",
+      "_tgt": "dashboard",
+      "source": "admin_html",
+      "target": "dashboard"
+    },
+    {
+      "relation": "has_panel",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin.html",
+      "_src": "admin_html",
+      "_tgt": "teachers",
+      "source": "admin_html",
+      "target": "teachers"
+    },
+    {
+      "relation": "has_panel",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin.html",
+      "_src": "admin_html",
+      "_tgt": "notices",
+      "source": "admin_html",
+      "target": "notices"
+    },
+    {
+      "relation": "has_panel",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin.html",
+      "_src": "admin_html",
+      "_tgt": "students",
+      "source": "admin_html",
+      "target": "students"
+    },
+    {
+      "relation": "has_panel",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin.html",
+      "_src": "admin_html",
+      "_tgt": "statistics",
+      "source": "admin_html",
+      "target": "statistics"
+    },
+    {
+      "relation": "has_panel",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin.html",
+      "_src": "admin_html",
+      "_tgt": "gallery",
+      "source": "admin_html",
+      "target": "gallery"
+    },
+    {
+      "relation": "has_panel",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin.html",
+      "_src": "admin_html",
+      "_tgt": "admission_inquiries",
+      "source": "admin_html",
+      "target": "admission_inquiries"
+    },
+    {
+      "relation": "has_panel",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin.html",
+      "_src": "admin_html",
+      "_tgt": "settings",
+      "source": "admin_html",
+      "target": "settings"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin.html",
+      "_src": "admin_html",
+      "_tgt": "color_palette",
+      "source": "admin_html",
+      "target": "color_palette"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin.html",
+      "_src": "admin_html",
+      "_tgt": "fonts",
+      "source": "admin_html",
+      "target": "fonts"
+    },
+    {
+      "relation": "manages",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin.html",
+      "_src": "teachers",
+      "_tgt": "teacher_fields",
+      "source": "teachers",
+      "target": "teacher_fields"
+    },
+    {
+      "relation": "manages",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin.html",
+      "_src": "notices",
+      "_tgt": "notice_categories",
+      "source": "notices",
+      "target": "notice_categories"
+    },
+    {
+      "relation": "tracks",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin.html",
+      "_src": "students",
+      "_tgt": "student_classes",
+      "source": "students",
+      "target": "student_classes"
+    },
+    {
+      "relation": "tracks",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin.html",
+      "_src": "statistics",
+      "_tgt": "school_stats",
+      "source": "statistics",
+      "target": "school_stats"
+    },
+    {
+      "relation": "configures",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin.html",
+      "_src": "settings",
+      "_tgt": "school_settings",
+      "source": "settings",
+      "target": "school_settings"
+    }
+  ],
+  "hyperedges": []
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Debug Gallery</title>
+<style>
+body { font-family: monospace; padding: 20px; }
+pre { background: #f4f4f4; padding: 10px; overflow-x: auto; }
+</style>
+</head>
+<body>
+<h1>Gallery Debug</h1>
+<div id="output">Loading...</div>
+<script>
+const data = JSON.parse(localStorage.getItem('schoolData'));
+let out = '';
+if (!data) {
+  out = 'No schoolData in localStorage!\n';
+} else if (!data.gallery) {
+  out = 'No gallery in schoolData!\n';
+} else {
+  out = 'Total collections: ' + data.gallery.length + '\n\n';
+  data.gallery.forEach((g, i) => {
+    out += 'Collection ' + i + ':\n';
+    out += '  Name: ' + (g.c || 'EMPTY') + '\n';
+    out += '  Order (i): ' + g.i + '\n';
+    out += '  Images: ' + (g.imgs ? g.imgs.length : 0) + '\n';
+    if (g.imgs && g.imgs.length > 0) {
+      out += '  First image length: ' + g.imgs[0].length + '\n';
+      out += '  First 100 chars: ' + g.imgs[0].substring(0,100) + '\n';
+    }
+    out += '\n';
+  });
+}
+document.getElementById('output').innerHTML = '<pre>' + out + '</pre>';
+</script>
+</body>
+</html>
